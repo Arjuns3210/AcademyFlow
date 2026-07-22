@@ -1,0 +1,95 @@
+// Bootstrap variable overrides go here (before the import) as the
+// project's visual identity is refined in later sprints.
+
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+body {
+    min-height: 100vh;
+}
+
+// --sidebar-* custom properties let each institute set its own sidebar
+// color (Institute::sidebarStyle(), set inline in the tenant layout) without
+// a separate compiled stylesheet per tenant. The fallback values here are
+// Bootstrap's stock $dark tone, so an institute with no custom color set
+// renders identically to before this existed.
+.sidebar {
+    min-height: 100vh;
+    background-color: var(--sidebar-bg, #212529);
+    color: var(--sidebar-text-strong, #fff);
+}
+
+// Bootstrap gives every <a> its own default link color (bs-primary blue),
+// which has higher specificity than plain inheritance from .sidebar — so
+// without this, any plain link in the sidebar (e.g. the institute name,
+// which isn't a .nav-link) renders in that default blue regardless of the
+// custom theme color. Normally harmless against the stock dark sidebar,
+// but blue-on-blue for a blue theme color is nearly invisible.
+.sidebar a {
+    color: inherit;
+}
+
+.sidebar .nav-link {
+    color: var(--sidebar-text, rgba(255, 255, 255, .75));
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+    color: var(--sidebar-text-strong, #fff);
+}
+
+// A light theme color needs its non-active nav text a little heavier, not
+// just darker — at normal weight it still read as faint against a pale
+// background even at high color opacity. Active items already get
+// fw-semibold from the layout regardless of theme, so this only affects
+// the resting state.
+.sidebar.sidebar-light-theme .nav-link {
+    font-weight: 500;
+}
+
+// Theme color preset swatches (Super Admin institute form) — a plain radio
+// input visually hidden behind a clickable colored circle, using the
+// :checked sibling selector so the selected state needs no JavaScript at all.
+.theme-swatch-label {
+    cursor: pointer;
+}
+
+.theme-swatch-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.theme-swatch {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #dee2e6;
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+.theme-swatch-input:checked + .theme-swatch {
+    border-color: #0d6efd;
+    transform: scale(1.1);
+}
+
+.theme-swatch-input:focus-visible + .theme-swatch {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+// Public welcome page (guest entry point, not part of the authenticated app
+// shell) — a soft brand-colored gradient behind a single centered card.
+.landing-hero {
+    min-height: 100vh;
+    padding: 1.5rem;
+    background: linear-gradient(160deg, #eaf2ff 0%, #f8f9fa 55%, #ffffff 100%);
+}
+
+.landing-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 1rem;
+}
