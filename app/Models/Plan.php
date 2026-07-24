@@ -16,6 +16,7 @@ class Plan extends Model
         'billing_cycle',
         'description',
         'is_active',
+        'staff_limit',
     ];
 
     protected function casts(): array
@@ -23,11 +24,22 @@ class Plan extends Model
         return [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
+            'staff_limit' => 'integer',
         ];
     }
 
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function planModules(): HasMany
+    {
+        return $this->hasMany(PlanModule::class);
+    }
+
+    public function hasModuleAccess(string $moduleKey): bool
+    {
+        return $this->planModules()->where('module_key', $moduleKey)->exists();
     }
 }

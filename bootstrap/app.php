@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'module' => \App\Http\Middleware\CheckModuleAccess::class,
             'super_admin' => \App\Http\Middleware\EnsureUserIsSuperAdmin::class,
         ]);
     })

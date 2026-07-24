@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-4">
+        <h1 class="h4 fw-bold mb-1">Welcome back</h1>
+        <p class="text-muted small mb-0">Log in to manage your institute.</p>
+    </div>
+
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">

@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit Student</h2>
             <div class="d-flex gap-2 align-items-center">
-                <x-back-link :href="route('institute.students.index')" label="Students" />
+                <x-back-link :href="route('institute.students.index')" />
                 @canModule('students', 'status')
                     @include('institute.students._status-form', ['student' => $student])
                 @endcanModule

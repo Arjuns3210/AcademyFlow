@@ -21,6 +21,7 @@ class StorePlanRequest extends FormRequest
             'billing_cycle' => ['required', Rule::in(['monthly', 'yearly'])],
             'description' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['sometimes', 'boolean'],
+            'staff_limit' => ['nullable', 'integer', 'min:1'],
         ];
     }
 
@@ -28,6 +29,9 @@ class StorePlanRequest extends FormRequest
     {
         $this->merge([
             'is_active' => $this->boolean('is_active'),
+            // The "Unlimited" checkbox wins regardless of whatever the
+            // (disabled, so possibly unsent) number input contains.
+            'staff_limit' => $this->boolean('staff_limit_unlimited') ? null : $this->input('staff_limit'),
         ]);
     }
 }

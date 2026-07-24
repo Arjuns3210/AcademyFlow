@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    // Meta WhatsApp Cloud API version only - actual phone_number_id/
+    // access_token/waba_id live in the whatsapp_settings table (per
+    // institute, or the institute_id = null platform-default row), not
+    // here, since Super Admin needs to manage them without a redeploy.
+    'whatsapp' => [
+        'api_version' => env('WHATSAPP_API_VERSION', 'v20.0'),
+    ],
+
 ];

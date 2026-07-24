@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Activate / Renew Subscription — {{ $subscription->institute->name }}</h2>
-            <x-back-link :href="route('super-admin.subscriptions.index')" label="Subscriptions" />
+            <x-back-link :href="route('super-admin.subscriptions.index')" />
         </div>
     </x-slot>
 

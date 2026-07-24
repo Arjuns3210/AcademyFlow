@@ -21,6 +21,7 @@ class UpdateStudentRequest extends FormRequest
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'dob' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:male,female,other'],
+            'student_mobile' => ['nullable', 'string', 'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/'],
             'parent_name' => ['nullable', 'string', 'max:150'],
             'parent_mobile' => ['required', 'string', 'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/'],
             'parent_email' => ['nullable', 'email', 'max:150'],

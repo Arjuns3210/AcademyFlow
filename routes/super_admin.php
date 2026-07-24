@@ -26,6 +26,8 @@ Route::middleware(['auth', 'super_admin'])
 
         Route::patch('plans/{plan}/toggle-status', [PlanController::class, 'toggleStatus'])
             ->name('plans.toggle-status');
+        Route::patch('plans-module-access', [PlanController::class, 'updateModuleAccess'])
+            ->name('plans.module-access.update');
         Route::resource('plans', PlanController::class)->except(['show']);
 
         Route::patch('coupons/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])

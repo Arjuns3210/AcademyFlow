@@ -6,10 +6,12 @@ use App\Models\Attendance;
 use App\Models\Batch;
 use App\Models\Course;
 use App\Models\FeeTransaction;
+use App\Models\Plan;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Models\WhatsAppLog;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\CreatesSecondInstitute;
@@ -167,6 +169,31 @@ class TenantIsolationSweepTest extends TestCase
 
         $this->actingAs($adminB)->patch(route('institute.staff.toggle-status', $staff))->assertNotFound();
         $this->assertNotNull(User::find($staff->id));
+    }
+
+    /**
+     * Not BelongsToTenant-scoped like the 8 above (see Sprint 9D's notes on
+     * why - the column is institute_id, not tenant_id, and whatsapp_settings
+     * additionally needs null-institute rows to stay visible everywhere for
+     * the platform-default fallback) - isolation here is the WhatsApp
+     * Settings page's own explicit institute_id filter, confirmed directly.
+     */
+    public function test_whatsapp_logs_are_tenant_isolated(): void
+    {
+        $admin = $this->tenantAdmin();
+        $professional = Plan::where('name', 'Professional')->firstOrFail();
+        $admin->institute->subscription->update(['status' => 'active', 'plan_id' => $professional->id]);
+        WhatsAppLog::create([
+            'institute_id' => $admin->tenant_id, 'template_name' => 'fee_reminder',
+            'recipient_number' => '9990007777', 'status' => 'sent',
+        ]);
+
+        [$instituteB, $adminB] = $this->createSecondInstituteWithAdmin();
+        $adminB->institute->subscription->update(['status' => 'active', 'plan_id' => $professional->id]);
+
+        $this->actingAs($adminB)->get(route('institute.whatsapp.index'))
+            ->assertOk()
+            ->assertDontSee('9990007777');
     }
 
     /**

@@ -72,4 +72,55 @@
             </table>
         </div>
     </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3 class="h6 text-uppercase text-muted mb-1">Module Access by Plan</h3>
+            <p class="text-muted small mb-3">
+                Which premium modules each plan unlocks. Trial institutes get every module regardless of this grid.
+            </p>
+
+            <form action="{{ route('super-admin.plans.module-access.update') }}" method="POST">
+                @csrf
+                @method('PATCH')
+
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Plan</th>
+                                @foreach ($moduleKeys as $key => $label)
+                                    <th class="text-center">{{ $label }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($plans as $plan)
+                                @php
+                                    $enabledKeys = $plan->planModules->pluck('module_key')->all();
+                                @endphp
+                                <tr>
+                                    <td>{{ $plan->name }}</td>
+                                    @foreach ($moduleKeys as $key => $label)
+                                        <td class="text-center">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input"
+                                                name="modules[{{ $plan->id }}][]"
+                                                value="{{ $key }}"
+                                                aria-label="{{ $plan->name }} - {{ $label }}"
+                                                {{ in_array($key, $enabledKeys, true) ? 'checked' : '' }}
+                                            >
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <x-primary-button>Save Module Access</x-primary-button>
+            </form>
+        </div>
+    </div>
 </x-super-admin-layout>

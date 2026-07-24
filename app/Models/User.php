@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Role;
+use App\Services\ModuleAccessService;
 use App\Services\PermissionService;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -118,5 +119,17 @@ class User extends Authenticatable
     public function canModule(string $moduleSlug, string $action): bool
     {
         return app(PermissionService::class)->can($this, $moduleSlug, $action);
+    }
+
+    /**
+     * Distinct from canModule() - this checks whether the institute's
+     * subscription plan includes a premium Phase 2/3 module (see
+     * PlanModuleKeys), not whether this user's role has permission to use
+     * an existing tenant module. Super Admin has no institute, so always false.
+     */
+    public function canAccessModule(string $moduleKey): bool
+    {
+        return $this->institute !== null
+            && app(ModuleAccessService::class)->hasAccess($this->institute, $moduleKey);
     }
 }

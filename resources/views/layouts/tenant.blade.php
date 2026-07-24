@@ -96,6 +96,19 @@
                             </li>
                         @endif
                     @endforeach
+
+                    @canAccessModule('whatsapp_reminder')
+                        <li class="nav-item">
+                            <a href="{{ route('institute.reminders.index') }}" class="nav-link {{ request()->routeIs('institute.reminders.*') ? 'active fw-semibold' : '' }}">
+                                <i class="bi bi-send me-1"></i> {{ __('Send Reminder') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('institute.whatsapp.index') }}" class="nav-link {{ request()->routeIs('institute.whatsapp.*') ? 'active fw-semibold' : '' }}">
+                                <i class="bi bi-whatsapp me-1"></i> {{ __('WhatsApp') }}
+                            </a>
+                        </li>
+                    @endcanAccessModule
                 </ul>
             </nav>
 

@@ -1,4 +1,7 @@
-@php $plan = $plan ?? null; @endphp
+@php
+    $plan = $plan ?? null;
+    $staffLimitUnlimited = old('staff_limit_unlimited', $plan && $plan->staff_limit === null);
+@endphp
 
 <x-form-input name="name" label="Plan Name" :value="$plan->name ?? ''" required autofocus />
 <x-form-input name="price" label="Price (₹)" type="number" step="0.01" min="0" :value="$plan->price ?? ''" required />
@@ -13,6 +16,24 @@
         @endforeach
     </select>
     <x-input-error :messages="$errors->get('billing_cycle')" />
+</div>
+
+<div class="mb-3">
+    <x-input-label for="staff_limit" value="Staff Limit" />
+    <div class="d-flex align-items-center gap-2">
+        <x-text-input id="staff_limit" name="staff_limit" type="number" min="1" step="1" class="w-auto"
+            style="max-width: 120px;"
+            :value="old('staff_limit', $plan->staff_limit ?? '')"
+            :disabled="$staffLimitUnlimited" />
+        <div class="form-check mb-0">
+            <input class="form-check-input" type="checkbox" id="staff_limit_unlimited" name="staff_limit_unlimited" value="1"
+                {{ $staffLimitUnlimited ? 'checked' : '' }}
+                onchange="document.getElementById('staff_limit').disabled = this.checked;">
+            <label class="form-check-label" for="staff_limit_unlimited">Unlimited</label>
+        </div>
+    </div>
+    <div class="form-text">How many staff members (including the institute admin) an institute on this plan may have.</div>
+    <x-input-error :messages="$errors->get('staff_limit')" />
 </div>
 
 <div class="mb-3">

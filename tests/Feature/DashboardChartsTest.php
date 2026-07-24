@@ -89,6 +89,33 @@ class DashboardChartsTest extends TestCase
         $response->assertDontSee('123456');
     }
 
+    public function test_students_by_course_chart_groups_active_students_and_handles_unassigned(): void
+    {
+        $admin = User::where('email', 'admin@brightcoaching.com')->firstOrFail();
+        $tenantId = $admin->tenant_id;
+
+        $courseA = Course::create(['tenant_id' => $tenantId, 'name' => 'Course Alpha', 'duration' => '1 month', 'fee' => 1000]);
+
+        Student::create(['tenant_id' => $tenantId, 'name' => 'Active A1', 'parent_mobile' => '9990000010', 'course_id' => $courseA->id, 'admission_date' => now()->toDateString(), 'status' => 'active']);
+        Student::create(['tenant_id' => $tenantId, 'name' => 'Active A2', 'parent_mobile' => '9990000011', 'course_id' => $courseA->id, 'admission_date' => now()->toDateString(), 'status' => 'active']);
+        Student::create(['tenant_id' => $tenantId, 'name' => 'Dropped A3', 'parent_mobile' => '9990000012', 'course_id' => $courseA->id, 'admission_date' => now()->toDateString(), 'status' => 'dropped']);
+        Student::create(['tenant_id' => $tenantId, 'name' => 'No Course', 'parent_mobile' => '9990000013', 'course_id' => null, 'admission_date' => now()->toDateString(), 'status' => 'active']);
+
+        [$instituteB, $adminB] = $this->createSecondInstituteWithAdmin();
+        $courseC = Course::create(['tenant_id' => $instituteB->id, 'name' => 'Course Gamma', 'duration' => '1 month', 'fee' => 1000]);
+        Student::create(['tenant_id' => $instituteB->id, 'name' => 'Institute B Student', 'parent_mobile' => '8880000099', 'course_id' => $courseC->id, 'admission_date' => now()->toDateString(), 'status' => 'active']);
+
+        $response = $this->actingAs($admin)->get(route('dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('id="studentsByCourseChart"', false);
+        // 2 active in Course Alpha (dropped excluded), 1 unassigned, and the
+        // other tenant's course/student must never appear on this page.
+        $response->assertSee('Course Alpha (2)');
+        $response->assertSee('Unassigned (1)');
+        $response->assertDontSee('Course Gamma');
+    }
+
     public function test_dashboard_charts_are_hidden_without_the_underlying_module_permission(): void
     {
         $admin = User::where('email', 'admin@brightcoaching.com')->firstOrFail();
@@ -100,5 +127,6 @@ class DashboardChartsTest extends TestCase
         $response->assertOk();
         $response->assertDontSee('id="monthlyCollectionChart"', false);
         $response->assertDontSee('id="admissionTrendChart"', false);
+        $response->assertDontSee('id="studentsByCourseChart"', false);
     }
 }

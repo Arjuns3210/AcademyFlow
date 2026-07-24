@@ -98,6 +98,18 @@
                                             {{ ucfirst($existing->status ?? 'Not marked') }}
                                         </span>
                                     @endif
+
+                                    @canAccessModule('whatsapp_reminder')
+                                        @if (($existing->status ?? '') === 'absent')
+                                            {{-- Submits the standalone per-row form emitted after the main
+                                                form closes below, via the HTML5 form= attribute — this form
+                                                cannot literally nest inside the attendance-marking form
+                                                itself, since HTML disallows that entirely. --}}
+                                            <button type="submit" form="reminder-form-{{ $student->id }}" class="btn btn-sm btn-outline-secondary ms-1">
+                                                Send Reminder
+                                            </button>
+                                        @endif
+                                    @endcanAccessModule
                                 </td>
                             </tr>
                         @empty
@@ -116,6 +128,18 @@
             </div>
         @endif
     </form>
+
+    @canAccessModule('whatsapp_reminder')
+        @foreach ($students as $student)
+            @php $existing = $existingMarks->get($student->id); @endphp
+            @if (($existing->status ?? '') === 'absent')
+                <form id="reminder-form-{{ $student->id }}" action="{{ route('institute.attendance.send-reminder', $student) }}" method="POST" class="d-none">
+                    @csrf
+                    <input type="hidden" name="attendance_date" value="{{ $date }}">
+                </form>
+            @endif
+        @endforeach
+    @endcanAccessModule
 
     @if ($canSubmit)
         <script>

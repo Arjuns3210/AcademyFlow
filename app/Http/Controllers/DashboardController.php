@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Course;
 use App\Models\FeeTransaction;
 use App\Models\Institute;
 use App\Models\InstituteType;
@@ -22,6 +23,7 @@ class DashboardController extends Controller
         $attendanceStats = null;
         $monthlyCollectionChart = null;
         $admissionTrendChart = null;
+        $studentsByCourseChart = null;
         $trialBanner = null;
         $superAdminStats = null;
         $instituteSignupChart = null;
@@ -58,6 +60,7 @@ class DashboardController extends Controller
             ];
 
             $admissionTrendChart = $this->admissionTrendSeries();
+            $studentsByCourseChart = $this->studentsByCourseSeries();
         }
 
         // Gated independently from students,view — an Accountant-style role
@@ -95,6 +98,7 @@ class DashboardController extends Controller
             'attendanceStats',
             'monthlyCollectionChart',
             'admissionTrendChart',
+            'studentsByCourseChart',
             'trialBanner',
             'superAdminStats',
             'instituteSignupChart',
@@ -157,6 +161,37 @@ class DashboardController extends Controller
         }
 
         return $series;
+    }
+
+    /**
+     * All-time distribution of currently-active students across courses, not
+     * a trend - mirrors instituteTypeSeries(). Counted from the Student side
+     * (not Course::withCount) so the total always reconciles with the
+     * dashboard's own Active Students card regardless of a course's own
+     * active/inactive/soft-deleted state. course_id is nullable, so a
+     * student never assigned a course gets its own "Unassigned" slice
+     * instead of silently vanishing from the total; withTrashed() covers a
+     * student still pointing at a since-soft-deleted course.
+     */
+    private function studentsByCourseSeries(): array
+    {
+        $rows = Student::where('status', 'active')
+            ->selectRaw('course_id, COUNT(*) as total')
+            ->groupBy('course_id')
+            ->get();
+
+        $courseNames = Course::withTrashed()
+            ->whereIn('id', $rows->pluck('course_id')->filter())
+            ->pluck('name', 'id');
+
+        return $rows
+            ->map(fn ($row) => [
+                'label' => $row->course_id ? ($courseNames->get($row->course_id) ?? 'Deleted Course') : 'Unassigned',
+                'value' => (int) $row->total,
+            ])
+            ->sortByDesc('value')
+            ->values()
+            ->all();
     }
 
     private function monthlyCollectionSeries(): array

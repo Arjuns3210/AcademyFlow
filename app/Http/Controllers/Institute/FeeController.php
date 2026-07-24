@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Institute;
 
+use App\Events\FeeDueEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Institute\StorePaymentRequest;
 use App\Http\Requests\Institute\UpdateDiscountRequest;
@@ -124,6 +125,49 @@ class FeeController extends Controller
         $studentFee->update($request->validated());
 
         return redirect()->route('institute.fees.show', $studentFee)->with('status', 'Installment note updated.');
+    }
+
+    /**
+     * Manual trigger — dispatches the same FeeDueEvent an eventual automatic
+     * scan would, so both paths share one access-check + send-logic
+     * (SendFeeDueWhatsAppReminder), not two copies of it. due_date is
+     * free text from the sender, not a stored field — there's no due_date
+     * concept on StudentFee yet (see FeeDueEvent's docblock).
+     */
+    public function sendReminder(Request $request, StudentFee $studentFee): RedirectResponse
+    {
+        $dueDateLabel = trim((string) $request->input('due_date_label', ''));
+
+        event(new FeeDueEvent(Auth::user()->institute, $studentFee, $dueDateLabel !== '' ? $dueDateLabel : null));
+
+        return redirect()->route('institute.fees.show', $studentFee)->with('status', 'Fee reminder queued.');
+    }
+
+    /**
+     * Same event/listener as sendReminder() above, just looped over a
+     * checkbox-selected batch from the fee list. StudentFee::whereIn() is
+     * still auto-scoped to the current tenant by BelongsToTenant's global
+     * scope, so a submitted id from another institute simply never matches.
+     */
+    public function sendBulkReminders(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'student_fee_ids' => ['required', 'array', 'min:1'],
+            'student_fee_ids.*' => ['integer'],
+            'due_date_label' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $dueDateLabel = trim((string) ($data['due_date_label'] ?? ''));
+        $institute = Auth::user()->institute;
+
+        $studentFees = StudentFee::whereIn('id', $data['student_fee_ids'])->get();
+
+        foreach ($studentFees as $studentFee) {
+            event(new FeeDueEvent($institute, $studentFee, $dueDateLabel !== '' ? $dueDateLabel : null));
+        }
+
+        return redirect()->route('institute.reminders.index')
+            ->with('status', "Fee reminder queued for {$studentFees->count()} student(s).");
     }
 
     public function voidTransaction(VoidTransactionRequest $request, FeeTransaction $transaction): RedirectResponse

@@ -2,9 +2,19 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">New Staff Member</h2>
-            <x-back-link :href="route('institute.staff.index')" label="Staff" />
+            <x-back-link :href="route('institute.staff.index')" />
         </div>
     </x-slot>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <div class="card" style="max-width: 640px;">
         <div class="card-body">

@@ -27,7 +27,7 @@
             <form action="{{ route('institute.students.index') }}" method="GET" class="row g-2 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label small mb-1">Search</label>
-                    <input type="text" name="search" class="form-control" placeholder="Name, code, or parent mobile" value="{{ $search }}">
+                    <input type="text" name="search" class="form-control" placeholder="Name, code, student or parent mobile" value="{{ $search }}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">Status</label>
@@ -86,6 +86,7 @@
                         <th></th>
                         <th>Code</th>
                         <th>Name</th>
+                        <th>Student Mobile</th>
                         <th>Parent Mobile</th>
                         <th>Status</th>
                         <th>Admitted</th>
@@ -107,6 +108,7 @@
                             </td>
                             <td><code>{{ $student->student_code }}</code></td>
                             <td>{{ $student->name }}</td>
+                            <td>{{ $student->student_mobile ?: '—' }}</td>
                             <td>{{ $student->parent_mobile }}</td>
                             <td>
                                 <span class="badge {{ match($student->status) { 'active' => 'bg-success', 'inactive' => 'bg-secondary', 'dropped' => 'bg-danger' } }}">
@@ -137,7 +139,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
+                            <td colspan="9" class="text-center text-muted py-4">
                                 {{ $showTrashed ? 'No students in trash.' : 'No students yet.' }}
                             </td>
                         </tr>

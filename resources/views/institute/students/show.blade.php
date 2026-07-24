@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">{{ $student->name }}</h2>
             <div class="d-flex gap-2">
-                <x-back-link :href="route('institute.students.index')" label="Students" />
+                <x-back-link :href="route('institute.students.index')" />
                 @canModule('students', 'status')
                     @include('institute.students._status-form', ['student' => $student])
                 @endcanModule
@@ -44,6 +44,9 @@
 
                         <dt class="col-sm-4">Gender</dt>
                         <dd class="col-sm-8">{{ $student->gender ? ucfirst($student->gender) : '—' }}</dd>
+
+                        <dt class="col-sm-4">Mobile</dt>
+                        <dd class="col-sm-8">{{ $student->student_mobile ?: '—' }}</dd>
 
                         <dt class="col-sm-4">Admission Date</dt>
                         <dd class="col-sm-8">{{ $student->admission_date->format('d M Y') }}</dd>

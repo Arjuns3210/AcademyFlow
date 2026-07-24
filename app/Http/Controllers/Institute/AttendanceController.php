@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Institute;
 
+use App\Events\StudentAbsentEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Institute\StoreAttendanceRequest;
 use App\Models\Attendance;
@@ -45,8 +46,9 @@ class AttendanceController extends Controller
     public function store(StoreAttendanceRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $institute = Auth::user()->institute;
 
-        DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data, $institute) {
             foreach ($data['statuses'] as $studentId => $status) {
                 // findOrFail (not just trusting the submitted ID) both
                 // confirms the student exists and — via the tenant global
@@ -54,7 +56,7 @@ class AttendanceController extends Controller
                 // batch_id is used to stamp the attendance row.
                 $student = Student::findOrFail($studentId);
 
-                Attendance::mark(
+                $attendance = Attendance::mark(
                     Auth::user()->tenant_id,
                     $student->id,
                     $student->batch_id,
@@ -62,6 +64,14 @@ class AttendanceController extends Controller
                     $status,
                     Auth::id(),
                 );
+
+                // Only a genuinely new absence — not a re-save of an
+                // already-absent day (e.g. staff reopens today's form and
+                // clicks Save again untouched) — so resubmitting the whole
+                // day's form doesn't re-fire a reminder for everyone in it.
+                if ($status === 'absent' && ($attendance->wasRecentlyCreated || $attendance->wasChanged('status'))) {
+                    event(new StudentAbsentEvent($institute, $student, $data['attendance_date']));
+                }
             }
         });
 
@@ -69,6 +79,57 @@ class AttendanceController extends Controller
             'date' => $data['attendance_date'],
             'batch_id' => $data['batch_id'] ?? null,
         ])->with('status', 'Attendance saved for '.Carbon::parse($data['attendance_date'])->format('d M Y').'.');
+    }
+
+    /**
+     * Manual trigger for one already-absent student on the currently-viewed
+     * date — dispatches the same event the automatic mark-absent path does,
+     * so both share one access-check + send-logic (SendStudentAbsentWhatsAppReminder).
+     */
+    public function sendReminder(Request $request, Student $student): RedirectResponse
+    {
+        $date = $this->clampToToday($request->input('attendance_date', now()->toDateString()));
+
+        event(new StudentAbsentEvent(Auth::user()->institute, $student, $date));
+
+        return redirect()->route('institute.attendance.index', ['date' => $date])
+            ->with('status', "Attendance reminder queued for {$student->name}.");
+    }
+
+    /**
+     * Same event/listener as sendReminder() above, looped over a
+     * checkbox-selected batch. Unlike the Fee bulk-send sibling, a submitted
+     * id here isn't inherently safe just because it's tenant-scoped — a
+     * student could be tenant-scoped but *not actually absent* on the given
+     * date if the request is tampered with, so this re-checks against real
+     * `attendance` rows for that date rather than trusting the submitted
+     * list at face value.
+     */
+    public function sendBulkReminders(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'student_ids' => ['required', 'array', 'min:1'],
+            'student_ids.*' => ['integer'],
+            'attendance_date' => ['required', 'date'],
+        ]);
+
+        $date = $this->clampToToday($data['attendance_date']);
+        $institute = Auth::user()->institute;
+
+        $absentStudents = Attendance::with('student')
+            ->whereIn('student_id', $data['student_ids'])
+            ->where('attendance_date', $date)
+            ->where('status', 'absent')
+            ->get()
+            ->pluck('student')
+            ->filter();
+
+        foreach ($absentStudents as $student) {
+            event(new StudentAbsentEvent($institute, $student, $date));
+        }
+
+        return redirect()->route('institute.reminders.index')
+            ->with('status', "Attendance reminder queued for {$absentStudents->count()} student(s).");
     }
 
     /**

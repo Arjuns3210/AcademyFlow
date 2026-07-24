@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit Module</h2>
-            <x-back-link :href="route('super-admin.modules.index')" label="Modules" />
+            <x-back-link :href="route('super-admin.modules.index')" />
         </div>
     </x-slot>
 

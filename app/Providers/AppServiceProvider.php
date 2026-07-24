@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Student;
 use App\Observers\StudentObserver;
+use App\Services\ModuleAccessService;
 use App\Services\PermissionService;
 use App\View\Composers\TenantSidebarComposer;
 use Illuminate\Support\Facades\Blade;
@@ -20,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
         // Singleton so its internal per-tenant/per-role lookup caches are
         // shared across an entire request (see PermissionService docblock).
         $this->app->singleton(PermissionService::class);
+
+        // Same reasoning - see ModuleAccessService docblock.
+        $this->app->singleton(ModuleAccessService::class);
     }
 
     /**
@@ -31,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
             $user = auth()->user();
 
             return $user && $user->canModule($moduleSlug, $action);
+        });
+
+        Blade::if('canAccessModule', function (string $moduleKey) {
+            $user = auth()->user();
+
+            return $user && $user->canAccessModule($moduleKey);
         });
 
         View::composer('layouts.tenant', TenantSidebarComposer::class);

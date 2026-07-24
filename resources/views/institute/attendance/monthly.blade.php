@@ -4,7 +4,7 @@
             <h2 class="h4 mb-0">{{ $moduleLabel }} — Monthly View</h2>
             <div class="d-flex gap-2">
                 <a href="{{ route('institute.attendance.monthly.export', ['ym' => sprintf('%04d-%02d', $year, $month), 'student_id' => $studentId, 'batch_id' => $batchId]) }}" class="btn btn-outline-secondary btn-sm">Export CSV</a>
-                <a href="{{ route('institute.attendance.index') }}" class="btn btn-outline-secondary btn-sm">Daily Marking</a>
+                <x-back-link :href="route('institute.attendance.index')" />
             </div>
         </div>
     </x-slot>

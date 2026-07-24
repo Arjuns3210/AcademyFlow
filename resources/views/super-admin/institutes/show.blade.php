@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">{{ $institute->name }}</h2>
             <div class="d-flex gap-2 align-items-center">
-                <x-back-link :href="route('super-admin.institutes.index')" label="Institutes" />
+                <x-back-link :href="route('super-admin.institutes.index')" />
                 <a href="{{ route('super-admin.institutes.edit', $institute) }}" class="btn btn-primary btn-sm">Edit</a>
             </div>
         </div>

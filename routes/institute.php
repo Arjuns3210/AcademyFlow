@@ -3,18 +3,38 @@
 use App\Http\Controllers\Institute\AttendanceController;
 use App\Http\Controllers\Institute\BatchController;
 use App\Http\Controllers\Institute\CourseController;
+use App\Http\Controllers\Institute\FeatureLockedController;
 use App\Http\Controllers\Institute\FeeController;
+use App\Http\Controllers\Institute\ReminderController;
 use App\Http\Controllers\Institute\ReportController;
 use App\Http\Controllers\Institute\RoleController;
 use App\Http\Controllers\Institute\StaffController;
 use App\Http\Controllers\Institute\StudentController;
 use App\Http\Controllers\Institute\TeacherController;
+use App\Http\Controllers\Institute\WhatsAppController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])
     ->prefix('institute')
     ->name('institute.')
     ->group(function () {
+        Route::get('feature-locked/{moduleKey}', [FeatureLockedController::class, 'show'])->name('feature-locked');
+
+        // Same "settings"-permission gate as Roles/Staff below — not one of
+        // the seeded tenant modules, so gated here rather than via canModule.
+        Route::middleware(['permission:settings,view', 'module:whatsapp_reminder'])->group(function () {
+            Route::get('whatsapp', [WhatsAppController::class, 'index'])->name('whatsapp.index');
+        });
+
+        // Combined "Send Reminder" module — its two sections (Fee Dues /
+        // Absent Students) are independently gated inside the controller by
+        // fees,view / attendance,view (same per-section split precedent as
+        // the dashboard's stat cards), since a role might have one but not
+        // the other. module:whatsapp_reminder alone at the route level.
+        Route::middleware('module:whatsapp_reminder')->group(function () {
+            Route::get('reminders', [ReminderController::class, 'index'])->name('reminders.index');
+        });
+
         Route::middleware('permission:settings,view')->group(function () {
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
         });
@@ -172,6 +192,11 @@ Route::middleware(['auth'])
             Route::patch('fees/transactions/{transaction}/void', [FeeController::class, 'voidTransaction'])->name('fees.transactions.void');
         });
 
+        Route::middleware(['permission:fees,view', 'module:whatsapp_reminder'])->group(function () {
+            Route::post('fees/{studentFee}/send-reminder', [FeeController::class, 'sendReminder'])->name('fees.send-reminder');
+            Route::post('fees/send-bulk-reminders', [FeeController::class, 'sendBulkReminders'])->name('fees.send-bulk-reminders');
+        });
+
         // attendance,view is the baseline route gate — marking today vs
         // correcting a past date (attendance,add vs attendance,edit) is
         // decided per-submission by StoreAttendanceRequest::authorize(),
@@ -183,6 +208,11 @@ Route::middleware(['auth'])
             Route::get('attendance/export', [AttendanceController::class, 'exportDaily'])->name('attendance.export');
             Route::get('attendance/monthly', [AttendanceController::class, 'monthly'])->name('attendance.monthly');
             Route::get('attendance/monthly/export', [AttendanceController::class, 'exportMonthly'])->name('attendance.monthly.export');
+        });
+
+        Route::middleware(['permission:attendance,view', 'module:whatsapp_reminder'])->group(function () {
+            Route::post('attendance/{student}/send-reminder', [AttendanceController::class, 'sendReminder'])->name('attendance.send-reminder');
+            Route::post('attendance/send-bulk-reminders', [AttendanceController::class, 'sendBulkReminders'])->name('attendance.send-bulk-reminders');
         });
 
         // Reports is a read-only aggregation layer over Students/Fees/

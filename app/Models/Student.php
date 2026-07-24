@@ -32,6 +32,7 @@ class Student extends Model
         'photo',
         'dob',
         'gender',
+        'student_mobile',
         'parent_name',
         'parent_mobile',
         'parent_email',

@@ -29,10 +29,10 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <x-form-input name="dob" label="Date of Birth" type="date" :value="$student?->dob?->toDateString()" />
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mb-3">
             <x-input-label for="gender" value="Gender" />
             <select name="gender" id="gender" class="form-select">
@@ -44,7 +44,10 @@
             <x-input-error :messages="$errors->get('gender')" />
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <x-form-input name="student_mobile" label="Student Mobile (optional)" :value="$student->student_mobile ?? ''" placeholder="e.g. 9876543210" />
+    </div>
+    <div class="col-md-3">
         <x-form-input name="admission_date" label="Admission Date" type="date" :value="($student->admission_date ?? now())->toDateString()" />
     </div>
 </div>

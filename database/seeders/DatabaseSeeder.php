@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             InstituteTypeSeeder::class,
             PlanSeeder::class,
+            PlanModuleSeeder::class,
             SuperAdminSeeder::class,
             DemoInstituteSeeder::class,
         ]);

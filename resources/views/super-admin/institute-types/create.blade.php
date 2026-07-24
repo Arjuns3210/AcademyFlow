@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">New Institute Type</h2>
-            <x-back-link :href="route('super-admin.institute-types.index')" label="Institute Types" />
+            <x-back-link :href="route('super-admin.institute-types.index')" />
         </div>
     </x-slot>
 

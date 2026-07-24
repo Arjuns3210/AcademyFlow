@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit Staff Member</h2>
-            <x-back-link :href="route('institute.staff.index')" label="Staff" />
+            <x-back-link :href="route('institute.staff.index')" />
         </div>
     </x-slot>
 

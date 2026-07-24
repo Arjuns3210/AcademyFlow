@@ -6,7 +6,14 @@
                 <div class="text-muted small"><code>{{ $studentFee->student->student_code }}</code></div>
             </div>
             <div class="d-flex gap-2 align-items-center">
-                <x-back-link :href="route('institute.fees.index')" label="Fees" />
+                <x-back-link :href="route('institute.fees.index')" />
+                @canAccessModule('whatsapp_reminder')
+                    @canModule('fees', 'view')
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
+                            Send Reminder
+                        </button>
+                    @endcanModule
+                @endcanAccessModule
                 @canModule('fees', 'edit')
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editDiscountModal">
                         Edit Discount
@@ -195,6 +202,41 @@
             </div>
         </div>
     </div>
+
+    @canAccessModule('whatsapp_reminder')
+        @canModule('fees', 'view')
+            <div class="modal fade" id="sendReminderModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('institute.fees.send-reminder', $studentFee) }}" method="POST">
+                            @csrf
+                            <div class="modal-header">
+                                <h2 class="h5 modal-title">Send Fee Reminder</h2>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-muted small">
+                                    Sends a WhatsApp reminder to {{ $studentFee->student->parent_name ?: $studentFee->student->name }}
+                                    @if ($studentFee->student->parent_mobile)
+                                        at {{ $studentFee->student->parent_mobile }}
+                                    @endif
+                                    for the pending balance of ₹{{ number_format($studentFee->pending_amount, 2) }}.
+                                </p>
+                                <div class="mb-0">
+                                    <x-input-label for="due_date_label" value="Due date (optional)" />
+                                    <x-text-input id="due_date_label" name="due_date_label" type="text" class="w-100" placeholder="e.g. 5th August" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <x-secondary-button type="button" data-bs-dismiss="modal">Cancel</x-secondary-button>
+                                <x-primary-button>Send Reminder</x-primary-button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endcanModule
+    @endcanAccessModule
 
     @canModule('fees', 'edit')
         <div class="modal fade {{ $errors->hasAny(['discount_amount', 'discount_reason']) ? 'show d-block' : '' }}" id="editDiscountModal" tabindex="-1">

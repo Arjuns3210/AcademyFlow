@@ -1,5 +1,13 @@
 // Bootstrap variable overrides go here (before the import) as the
 // project's visual identity is refined in later sprints.
+$primary: #1b3a6b; // deep indigo — academy/institutional brand color
+$border-radius: .6rem;
+$border-radius-sm: .4rem;
+$border-radius-lg: .8rem;
+
+// Not a Bootstrap variable — a custom accent used for highlights (feature
+// icons, brand-panel bullets) where full $primary would be too heavy.
+$accent-amber: #f2a73b;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
@@ -85,11 +93,70 @@ body {
 .landing-hero {
     min-height: 100vh;
     padding: 1.5rem;
-    background: linear-gradient(160deg, #eaf2ff 0%, #f8f9fa 55%, #ffffff 100%);
+    background: linear-gradient(160deg, #eaf1fb 0%, #faf8f4 55%, #ffffff 100%);
 }
 
 .landing-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
+    border-radius: 1rem;
+}
+
+.landing-icon-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba($primary, .1);
+    color: $primary;
+    font-size: 1.75rem;
+}
+
+// Guest auth pages (login/forgot-password/reset-password/confirm-password/
+// verify-email) — a split brand panel + form panel. The brand panel is
+// decorative only and hidden below `lg`; the mobile logo shown above the
+// card in guest.blade.php carries the branding at that size instead.
+.auth-shell {
+    min-height: 100vh;
+}
+
+.auth-brand-panel {
+    width: 42%;
+    max-width: 480px;
+    background: linear-gradient(160deg, $primary 0%, darken($primary, 12%) 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 3rem;
+}
+
+.auth-brand-icon {
+    position: absolute;
+    right: -2rem;
+    bottom: -3rem;
+    font-size: 18rem;
+    color: rgba(255, 255, 255, .08);
+    line-height: 1;
+}
+
+.auth-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: .85rem;
+    color: rgba(255, 255, 255, .9);
+}
+
+.auth-feature-list i {
+    font-size: 1.1rem;
+    color: $accent-amber;
+}
+
+.auth-form-panel {
+    flex: 1;
+    background: #faf8f4;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
     border-radius: 1rem;
 }

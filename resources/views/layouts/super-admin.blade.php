@@ -14,7 +14,7 @@
             <nav class="sidebar bg-dark flex-shrink-0" style="width: 240px;">
                 <div class="p-3 border-bottom border-secondary">
                     <a href="{{ route('dashboard') }}" class="text-decoration-none">
-                        <x-application-logo class="text-white" size="fs-5" />
+                        <x-application-logo variant="light" size="fs-5" />
                     </a>
                     <div class="small text-white-50 mt-1">Super Admin</div>
                 </div>

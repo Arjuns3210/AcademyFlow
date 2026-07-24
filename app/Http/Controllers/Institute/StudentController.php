@@ -34,7 +34,8 @@ class StudentController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('student_code', 'like', "%{$search}%")
-                    ->orWhere('parent_mobile', 'like', "%{$search}%");
+                    ->orWhere('parent_mobile', 'like', "%{$search}%")
+                    ->orWhere('student_mobile', 'like', "%{$search}%");
             });
         }
 
@@ -111,6 +112,7 @@ class StudentController extends Controller
             'photo' => $request->hasFile('photo') ? $request->file('photo')->store('student-photos', 'public') : null,
             'dob' => $data['dob'] ?? null,
             'gender' => $data['gender'] ?? null,
+            'student_mobile' => $data['student_mobile'] ?? null,
             'parent_name' => $data['parent_name'] ?? null,
             'parent_mobile' => $data['parent_mobile'],
             'parent_email' => $data['parent_email'] ?? null,
@@ -153,6 +155,7 @@ class StudentController extends Controller
             'photo' => $photoPath,
             'dob' => $data['dob'] ?? null,
             'gender' => $data['gender'] ?? null,
+            'student_mobile' => $data['student_mobile'] ?? null,
             'parent_name' => $data['parent_name'] ?? null,
             'parent_mobile' => $data['parent_mobile'],
             'parent_email' => $data['parent_email'] ?? null,

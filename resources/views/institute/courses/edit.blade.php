@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">Edit {{ Str::singular($moduleLabel) }}</h2>
             <div class="d-flex gap-2 align-items-center">
-                <x-back-link :href="route('institute.courses.index')" :label="$moduleLabel" />
+                <x-back-link :href="route('institute.courses.index')" />
                 @canModule('courses', 'status')
                     @include('institute.courses._status-form', ['course' => $course])
                 @endcanModule

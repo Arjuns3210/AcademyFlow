@@ -5,7 +5,7 @@
             <div class="d-flex gap-2">
                 <a href="{{ route('institute.reports.collections.export', $filters) }}" class="btn btn-outline-secondary btn-sm">Export CSV</a>
                 <a href="{{ route('institute.reports.collections.export-pdf', $filters) }}" class="btn btn-outline-secondary btn-sm">Export PDF</a>
-                <a href="{{ route('institute.reports.index') }}" class="btn btn-outline-secondary btn-sm">All Reports</a>
+                <x-back-link :href="route('institute.reports.index')" />
             </div>
         </div>
     </x-slot>

@@ -168,6 +168,25 @@
             @endif
 
         </div>
-        @include('_dashboard-charts')
+
+        @canAccessModule('dashboard_charts')
+            @include('_dashboard-charts')
+        @else
+            @if ($monthlyCollectionChart || $admissionTrendChart || $studentsByCourseChart)
+                <div class="row g-4 mt-2">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-center py-4">
+                                <i class="bi bi-lock text-muted fs-3 d-block mb-2"></i>
+                                <p class="mb-2">Unlock revenue, admission trend &amp; course breakdown charts on the Professional plan.</p>
+                                <a href="{{ route('institute.feature-locked', ['moduleKey' => 'dashboard_charts']) }}" class="btn btn-sm btn-outline-primary">
+                                    Upgrade
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endcanAccessModule
     @endif
 </x-dynamic-component>

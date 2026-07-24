@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">New {{ Str::singular($moduleLabel) }}</h2>
-            <x-back-link :href="route('institute.teachers.index')" :label="$moduleLabel" />
+            <x-back-link :href="route('institute.teachers.index')" />
         </div>
     </x-slot>
 

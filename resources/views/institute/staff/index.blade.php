@@ -22,6 +22,8 @@
         </div>
     @endif
 
+    <div class="text-muted small mb-2">{{ $staffUsageLabel }}</div>
+
     <div class="card">
         <div class="card-body p-0">
             <table class="table table-hover mb-0 align-middle">
