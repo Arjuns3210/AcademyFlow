@@ -96,13 +96,9 @@ class Subscription extends Model
      * as "2 days left" a few seconds later, the moment any time at all has
      * elapsed). Stripping both sides to midnight keeps the count stable for
      * the whole calendar day and only ticks down at an actual day boundary.
-     *
-     * absolute: true — diffInDays() is signed by argument order in this
-     * Carbon version (confirmed in Sprint 6B), so this must be explicit or
-     * a lapsed-looking negative value could slip through silently.
      */
     public function daysLeftInTrial(): int
     {
-        return now()->startOfDay()->diffInDays($this->trial_ends_at->copy()->startOfDay(), absolute: true);
+        return max(0, now()->startOfDay()->diffInDays($this->trial_ends_at->copy()->startOfDay(), absolute: false));
     }
 }

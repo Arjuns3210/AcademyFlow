@@ -52,6 +52,52 @@ class SubscriptionEnforcementTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_trial_still_within_window_shows_days_left_banner_on_dashboard(): void
+    {
+        $admin = $this->tenantAdmin();
+        $admin->institute->subscription->update(['status' => 'trial', 'trial_ends_at' => now()->addDays(2)]);
+
+        $this->actingAs($admin)->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('2 days left in your free trial')
+            ->assertDontSee('Your free trial has ended');
+    }
+
+    /**
+     * Regression test for a real bug the user hit live: loginBlockReason()
+     * used to only be checked at the login form itself, so a session that
+     * was already authenticated before the trial lapsed kept full access -
+     * including creating students - for as long as that session lasted.
+     * IdentifyTenant now re-checks it on every request.
+     */
+    public function test_trial_past_its_end_date_blocks_an_already_authenticated_session_from_further_requests(): void
+    {
+        $admin = $this->tenantAdmin();
+        $admin->institute->subscription->update(['status' => 'trial', 'trial_ends_at' => now()->addHour()]);
+
+        // Establish a session while the trial is still technically valid...
+        $this->actingAs($admin)->get(route('dashboard'))->assertOk();
+
+        // ...then the trial lapses without the user logging out.
+        $admin->institute->subscription->update(['trial_ends_at' => now()->subMinute()]);
+
+        $this->get(route('dashboard'))->assertForbidden();
+        $this->post(route('institute.students.store'), ['name' => 'Late Student', 'parent_mobile' => '9990003333'])
+            ->assertForbidden();
+        $this->assertDatabaseMissing('students', ['name' => 'Late Student']);
+    }
+
+    public function test_trial_still_within_window_allows_an_already_authenticated_session_to_keep_working(): void
+    {
+        $admin = $this->tenantAdmin();
+        $admin->institute->subscription->update(['status' => 'trial', 'trial_ends_at' => now()->addDays(2)]);
+
+        $this->actingAs($admin)->get(route('dashboard'))->assertOk();
+        $this->post(route('institute.students.store'), ['name' => 'On Time Student', 'parent_mobile' => '9990004444'])
+            ->assertRedirect();
+        $this->assertDatabaseHas('students', ['name' => 'On Time Student']);
+    }
+
     public function test_expired_subscription_is_blocked(): void
     {
         $admin = $this->tenantAdmin();
