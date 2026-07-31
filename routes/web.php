@@ -2,10 +2,20 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Plan;
+use App\Support\PlanModuleKeys;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $plans = Plan::where('is_active', true)
+        ->with('planModules')
+        ->orderBy('price')
+        ->get();
+
+    return view('welcome', [
+        'plans' => $plans,
+        'moduleLabels' => PlanModuleKeys::all(),
+    ]);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])

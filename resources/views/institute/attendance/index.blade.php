@@ -72,7 +72,7 @@
                             <th>Sr No</th>
                             <th>Student</th>
                             <th>Batch</th>
-                            <th style="width: 200px;">Status</th>
+                            <th style="width: 320px;">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,12 +87,15 @@
                                 <td>{{ $student->batch?->name ?? '—' }}</td>
                                 <td>
                                     @if ($canSubmit)
-                                        <select name="statuses[{{ $student->id }}]" class="form-select form-select-sm attendance-status">
-                                            <option value="present" {{ ($existing->status ?? 'present') === 'present' ? 'selected' : '' }}>Present</option>
-                                            <option value="absent" {{ ($existing->status ?? '') === 'absent' ? 'selected' : '' }}>Absent</option>
-                                            <option value="late" {{ ($existing->status ?? '') === 'late' ? 'selected' : '' }}>Late</option>
-                                            <option value="leave" {{ ($existing->status ?? '') === 'leave' ? 'selected' : '' }}>Leave</option>
-                                        </select>
+                                        @php $currentStatus = $existing->status ?? 'present'; @endphp
+                                        <div class="btn-group attendance-status-group" role="group">
+                                            @foreach (['present' => 'Present', 'absent' => 'Absent', 'late' => 'Late', 'leave' => 'Leave'] as $value => $label)
+                                                <input type="radio" class="btn-check attendance-status" autocomplete="off"
+                                                       name="statuses[{{ $student->id }}]" id="status-{{ $student->id }}-{{ $value }}"
+                                                       value="{{ $value }}" {{ $currentStatus === $value ? 'checked' : '' }}>
+                                                <label class="btn btn-sm btn-outline-{{ ['present' => 'success', 'absent' => 'danger', 'late' => 'warning', 'leave' => 'info'][$value] }}" for="status-{{ $student->id }}-{{ $value }}">{{ $label }}</label>
+                                            @endforeach
+                                        </div>
                                     @else
                                         <span class="badge {{ match($existing->status ?? 'present') { 'present' => 'bg-success', 'late' => 'bg-warning text-dark', 'leave' => 'bg-info text-dark', 'absent' => 'bg-danger' } }}">
                                             {{ ucfirst($existing->status ?? 'Not marked') }}
@@ -144,8 +147,9 @@
     @if ($canSubmit)
         <script>
             function markAll(status) {
-                document.querySelectorAll('.attendance-status').forEach(function (select) {
-                    select.value = status;
+                document.querySelectorAll('.attendance-status-group').forEach(function (group) {
+                    var input = group.querySelector('input.attendance-status[value="' + status + '"]');
+                    if (input) input.checked = true;
                 });
             }
         </script>

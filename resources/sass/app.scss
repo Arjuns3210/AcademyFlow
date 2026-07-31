@@ -88,18 +88,19 @@ body {
     outline-offset: 2px;
 }
 
-// Public welcome page (guest entry point, not part of the authenticated app
-// shell) — a soft brand-colored gradient behind a single centered card.
-.landing-hero {
-    min-height: 100vh;
-    padding: 1.5rem;
-    background: linear-gradient(160deg, #eaf1fb 0%, #faf8f4 55%, #ffffff 100%);
+// Public marketing landing page (guest entry point, not part of the
+// authenticated app shell) — nav + hero + feature grid + pricing + footer.
+.landing-page {
+    overflow-x: hidden;
 }
 
-.landing-card {
-    width: 100%;
-    max-width: 460px;
-    border-radius: 1rem;
+.landing-nav {
+    padding: 1.25rem 5%;
+}
+
+.landing-hero {
+    padding: 2rem 5% 4rem;
+    background: linear-gradient(160deg, #eaf1fb 0%, #faf8f4 55%, #ffffff 100%);
 }
 
 .landing-icon-badge {
@@ -109,6 +110,148 @@ body {
     background: rgba($primary, .1);
     color: $primary;
     font-size: 1.75rem;
+}
+
+.landing-headline {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $primary;
+}
+
+.landing-subheadline {
+    max-width: 620px;
+    font-size: 1.1rem;
+}
+
+.landing-section {
+    padding: 4.5rem 5%;
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.landing-section-alt {
+    background: #faf8f4;
+    max-width: 100%;
+    border-radius: 0;
+}
+
+.landing-section-title {
+    color: $primary;
+    font-weight: 700;
+}
+
+.landing-section-lead {
+    max-width: 560px;
+}
+
+.feature-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: $border-radius-lg;
+    padding: 1.75rem;
+    transition: box-shadow .15s ease, transform .15s ease;
+}
+
+.feature-card:hover {
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .06);
+    transform: translateY(-2px);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($accent-amber, .15);
+    color: darken($accent-amber, 10%);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.screenshot-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    transition: box-shadow .15s ease, transform .15s ease;
+}
+
+.screenshot-card:hover {
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .08);
+    transform: translateY(-2px);
+}
+
+.screenshot-browser-bar {
+    display: flex;
+    gap: .35rem;
+    padding: .6rem .75rem;
+    background: #f1f1f1;
+    border-bottom: 1px solid #e5e5e5;
+
+    span {
+        width: .55rem;
+        height: .55rem;
+        border-radius: 50%;
+        background: #d5d5d5;
+    }
+}
+
+.screenshot-img {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+}
+
+.pricing-card {
+    position: relative;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: $border-radius-lg;
+    padding: 2rem;
+}
+
+.pricing-card-popular {
+    border-color: $primary;
+    box-shadow: 0 .75rem 2rem rgba($primary, .12);
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -.75rem;
+    right: 1.5rem;
+    background: $primary;
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .3rem .75rem;
+    border-radius: 1rem;
+}
+
+.pricing-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary;
+}
+
+.pricing-currency {
+    font-size: 1.25rem;
+    vertical-align: top;
+}
+
+.pricing-feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    margin-bottom: .6rem;
+    font-size: .9rem;
+}
+
+.landing-footer {
+    padding: 3rem 5%;
+    border-top: 1px solid #eee;
 }
 
 // Guest auth pages (login/forgot-password/reset-password/confirm-password/

@@ -11,23 +11,24 @@
         </div>
     @endif
 
-    @if ($admissionTrendChart)
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="text-muted small text-uppercase mb-2">Admission Trend <span class="text-muted">(Last 6 Months)</span></div>
-                    <canvas id="admissionTrendChart" height="220"></canvas>
-                </div>
-            </div>
-        </div>
-    @endif
-
     @if ($studentsByCourseChart)
         <div class="col-lg-6">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="text-muted small text-uppercase mb-2">Students by Course <span class="text-muted">(Active Students)</span></div>
                     <canvas id="studentsByCourseChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
+    @if ($admissionTrendChart)
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase mb-2">Admission Trend <span class="text-muted">(Last 6 Months)</span></div>
+                    <canvas id="admissionTrendChart" height="220"></canvas>
                 </div>
             </div>
         </div>

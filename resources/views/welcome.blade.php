@@ -3,47 +3,223 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ config('app.name', 'AcademyFlow') }}</title>
+        <title>{{ config('app.name', 'AcademyFlow') }} — Institute Management Software</title>
+        <meta name="description" content="AcademyFlow is an all-in-one platform for coaching institutes and academies to manage admissions, fees, attendance, and reports.">
         @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     </head>
     <body>
-        <div class="landing-hero d-flex flex-column align-items-center justify-content-center">
-            <div class="card landing-card border-0 shadow-lg">
-                <div class="card-body text-center p-5">
-                    <div class="landing-icon-badge d-inline-flex align-items-center justify-content-center mb-3">
-                        <i class="bi bi-mortarboard-fill"></i>
-                    </div>
+        <div class="landing-page">
 
-                    <x-application-logo size="fs-2" class="mb-2 d-inline-flex justify-content-center w-100" />
+            {{-- Nav --}}
+            <nav class="landing-nav d-flex align-items-center justify-content-between">
+                <x-application-logo />
 
-                    <p class="text-muted mb-4">
-                        One place to run your institute — students, fees, attendance, and reports.
-                    </p>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn btn-primary px-4">Go to Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary px-4">Log in</a>
+                @endauth
+            </nav>
 
-                    <div class="row row-cols-2 g-3 text-start small mb-4">
-                        <div class="col d-flex align-items-center gap-2">
-                            <i class="bi bi-people-fill text-primary"></i> Students &amp; Admissions
-                        </div>
-                        <div class="col d-flex align-items-center gap-2">
-                            <i class="bi bi-cash-coin text-primary"></i> Fees &amp; Collections
-                        </div>
-                        <div class="col d-flex align-items-center gap-2">
-                            <i class="bi bi-calendar-check text-primary"></i> Attendance Tracking
-                        </div>
-                        <div class="col d-flex align-items-center gap-2">
-                            <i class="bi bi-bar-chart-line text-primary"></i> Reports &amp; Insights
-                        </div>
-                    </div>
+            {{-- Hero --}}
+            <header class="landing-hero text-center">
+                <div class="landing-icon-badge d-inline-flex align-items-center justify-content-center mb-4">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
 
+                <h1 class="landing-headline mb-3">Run your entire institute<br class="d-none d-md-block"> from one dashboard</h1>
+
+                <p class="landing-subheadline text-muted mx-auto mb-4">
+                    Admissions, fees, attendance, and reports — built for coaching institutes and academies
+                    that are done juggling registers, spreadsheets, and WhatsApp groups.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 justify-content-center mb-2">
                     @auth
                         <a href="{{ url('/dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
                     @else
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">Log in</a>
+                        <a href="https://mptechpoint.in/contact" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg px-4">Talk to Sales</a>
                     @endauth
                 </div>
-            </div>
+                <p class="text-muted small mb-0">New institutes are onboarded by our team — reach out to get set up.</p>
+            </header>
 
-            <p class="text-muted small mt-3 mb-0">Powered by MP Tech Solutions</p>
+            {{-- Core features --}}
+            <section class="landing-section">
+                <h2 class="landing-section-title text-center mb-2">Everything your institute runs on</h2>
+                <p class="text-muted text-center mx-auto mb-5 landing-section-lead">
+                    One connected system instead of five disconnected tools.
+                </p>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+                            <h3 class="h5 mb-2">Students &amp; Admissions</h3>
+                            <p class="text-muted small mb-0">Admit, search, and manage students with course and batch assignment built in.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-cash-coin"></i></div>
+                            <h3 class="h5 mb-2">Fees &amp; Collections</h3>
+                            <p class="text-muted small mb-0">Track dues, collect payments, apply discounts, and generate PDF receipts automatically.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-calendar-check"></i></div>
+                            <h3 class="h5 mb-2">Attendance Tracking</h3>
+                            <p class="text-muted small mb-0">Mark daily attendance in seconds and review monthly trends per student or batch.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-bar-chart-line"></i></div>
+                            <h3 class="h5 mb-2">Reports &amp; Insights</h3>
+                            <p class="text-muted small mb-0">Student, attendance, fee, and collection reports — export to CSV or PDF anytime.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
+                            <h3 class="h5 mb-2">Roles &amp; Staff Access</h3>
+                            <p class="text-muted small mb-0">Give staff exactly the access they need with granular, per-module permissions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon"><i class="bi bi-shield-lock-fill"></i></div>
+                            <h3 class="h5 mb-2">Secure by Design</h3>
+                            <p class="text-muted small mb-0">Every institute's data is fully isolated on a modern, actively maintained platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {{-- Product tour --}}
+            <section class="landing-section">
+                <h2 class="landing-section-title text-center mb-2">See AcademyFlow in action</h2>
+                <p class="text-muted text-center mx-auto mb-5 landing-section-lead">
+                    A real look at the dashboard your institute would use every day.
+                </p>
+
+                <div class="row g-4">
+                    @foreach ([
+                        ['dashboard.png', 'Dashboard', 'Students, fees, attendance, and collection trends at a glance.'],
+                        ['students.png', 'Students', 'Search, filter, and manage every admission in one list.'],
+                        ['batches.png', 'Batches', 'See enrollment, teacher, and timing for every batch.'],
+                        ['fees.png', 'Fees', 'Track paid, partial, and pending fees across all students.'],
+                        ['fee-detail.png', 'Fee Collection', 'Collect payments and auto-generate receipts per student.'],
+                        ['attendance.png', 'Attendance', 'Mark daily attendance and send reminders to absentees.'],
+                    ] as [$file, $title, $desc])
+                        <div class="col-md-6 col-lg-4">
+                            <div class="screenshot-card h-100">
+                                <div class="screenshot-browser-bar">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <img
+                                    src="{{ asset('images/screenshots/' . $file) }}"
+                                    alt="AcademyFlow {{ $title }} screen"
+                                    class="screenshot-img"
+                                    loading="lazy"
+                                    role="button"
+                                    data-full-src="{{ asset('images/screenshots/' . $file) }}"
+                                    data-full-title="{{ $title }}"
+                                >
+                                <div class="p-3">
+                                    <h3 class="h6 mb-1">{{ $title }}</h3>
+                                    <p class="text-muted small mb-0">{{ $desc }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+
+            {{-- Pricing --}}
+            <section class="landing-section landing-section-alt">
+                <h2 class="landing-section-title text-center mb-2">Simple, transparent pricing</h2>
+                <p class="text-muted text-center mx-auto mb-5 landing-section-lead">
+                    Every plan includes the full core system. Higher plans unlock automation add-ons.
+                </p>
+
+                @if ($plans->isEmpty())
+                    <p class="text-muted text-center mb-0">Pricing is being finalized — contact us for current plan details.</p>
+                @else
+                    <div class="row g-4 justify-content-center">
+                        @foreach ($plans as $plan)
+                            @php
+                                $isPopular = $plan->name === 'Professional';
+                                $planModuleKeys = $plan->planModules->pluck('module_key');
+                            @endphp
+                            <div class="col-md-6 col-lg-4">
+                                <div class="pricing-card h-100 {{ $isPopular ? 'pricing-card-popular' : '' }}">
+                                    @if ($isPopular)
+                                        <span class="pricing-badge">Most Popular</span>
+                                    @endif
+
+                                    <h3 class="h4 mb-1">{{ $plan->name }}</h3>
+                                    @if ($plan->description)
+                                        <p class="text-muted small mb-3">{{ $plan->description }}</p>
+                                    @endif
+
+                                    <div class="pricing-amount mb-3">
+                                        <span class="pricing-currency">₹</span>{{ number_format((float) $plan->price) }}
+                                        <span class="text-muted fs-6 fw-normal">/ {{ $plan->billing_cycle === 'yearly' ? 'year' : 'month' }}</span>
+                                    </div>
+
+                                    <ul class="list-unstyled pricing-feature-list mb-4">
+                                        <li><i class="bi bi-check-circle-fill text-success"></i> Full core system (students, fees, attendance, reports)</li>
+                                        <li><i class="bi bi-check-circle-fill text-success"></i> {{ $plan->staff_limit ? "Up to {$plan->staff_limit} staff accounts" : 'Unlimited staff accounts' }}</li>
+                                        @forelse ($planModuleKeys as $key)
+                                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ $moduleLabels[$key] ?? $key }}</li>
+                                        @empty
+                                            <li class="text-muted"><i class="bi bi-dash-circle"></i> Add-on automation not included</li>
+                                        @endforelse
+                                    </ul>
+
+                                    <a href="https://mptechpoint.in/contact" target="_blank" rel="noopener" class="btn {{ $isPopular ? 'btn-primary' : 'btn-outline-primary' }} w-100">Get Started</a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </section>
+
+            {{-- Footer --}}
+            <footer class="landing-footer text-center">
+                <x-application-logo size="fs-5" class="justify-content-center mb-2" />
+                <p class="text-muted small mb-1">Powered by <b><a href="https://mptechpoint.in/" target="_blank" rel="noopener" class="text-muted">Mp tech point</a></b></p>
+                <p class="text-muted small mb-0">&copy; {{ now()->year }} Mp tech point. All rights reserved.</p>
+            </footer>
         </div>
+
+        {{-- Shared lightbox for the product tour screenshots --}}
+        <div class="modal fade" id="screenshotModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="screenshotModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <img id="screenshotModalImg" src="" alt="" class="w-100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.screenshot-img').forEach(function (img) {
+                img.addEventListener('click', function () {
+                    document.getElementById('screenshotModalImg').src = img.dataset.fullSrc;
+                    document.getElementById('screenshotModalImg').alt = img.alt;
+                    document.getElementById('screenshotModalTitle').textContent = img.dataset.fullTitle;
+                    new bootstrap.Modal(document.getElementById('screenshotModal')).show();
+                });
+            });
+        </script>
     </body>
 </html>

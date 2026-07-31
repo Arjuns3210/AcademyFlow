@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <p class="text-muted small mt-4 mb-0">Powered by MP Tech Solutions</p>
+                <p class="text-muted small mt-4 mb-0">Powered by <a href="https://mptechpoint.in/" target="_blank" rel="noopener" class="text-muted">Mp tech point</a></p>
             </div>
         </div>
     </body>

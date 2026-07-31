@@ -95,12 +95,12 @@ class Attendance extends Model
 
         $totalMarked = array_sum($summary);
 
-        // Present + late both count as "attended"; leave counts as a
-        // tracked day but not an attended one. Null (not 0%) when nothing
-        // was marked at all, so an unmarked month doesn't misleadingly
-        // read as 0% attendance.
+        // Present counts fully, late counts as half-attended, leave/absent
+        // count as tracked but not attended. Null (not 0%) when nothing was
+        // marked at all, so an unmarked month doesn't misleadingly read as
+        // 0% attendance.
         $summary['percentage'] = $totalMarked > 0
-            ? round(($summary['present'] + $summary['late']) / $totalMarked * 100, 1)
+            ? round(($summary['present'] + $summary['late'] * 0.5) / $totalMarked * 100, 1)
             : null;
 
         return $summary;
