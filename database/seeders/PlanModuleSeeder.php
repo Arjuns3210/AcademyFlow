@@ -14,6 +14,8 @@ class PlanModuleSeeder extends Seeder
             'Starter' => [],
             'Professional' => ['whatsapp_reminder', 'sms', 'dashboard_charts'],
             'Enterprise' => ['whatsapp_reminder', 'sms', 'qr_attendance', 'student_login', 'parent_login', 'dashboard_charts'],
+            'Starter Yearly' => [],
+            'Professional Yearly' => ['whatsapp_reminder', 'sms', 'dashboard_charts'],
         ];
 
         foreach ($mapping as $planName => $moduleKeys) {

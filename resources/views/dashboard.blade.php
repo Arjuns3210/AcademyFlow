@@ -5,6 +5,10 @@
         </h2>
     </x-slot>
 
+    @if (session('status'))
+        <div class="alert alert-info">{{ session('status') }}</div>
+    @endif
+
     @if (auth()->user()->isSuperAdmin())
         <div class="row g-3">
             <div class="col-sm-6 col-xl-3">

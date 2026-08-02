@@ -138,6 +138,7 @@ class FeeController extends Controller
     {
         $dueDateLabel = trim((string) $request->input('due_date_label', ''));
 
+        \Log::info("Manual fee reminder trigger for StudentFee ID {$studentFee->id} (Student ID {$studentFee->student_id}) by user ID " . Auth::id() . ", due date label: '{$dueDateLabel}'");
         event(new FeeDueEvent(Auth::user()->institute, $studentFee, $dueDateLabel !== '' ? $dueDateLabel : null));
 
         return redirect()->route('institute.fees.show', $studentFee)->with('status', 'Fee reminder queued.');

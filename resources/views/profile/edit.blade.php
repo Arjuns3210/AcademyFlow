@@ -6,22 +6,28 @@
     </x-slot>
 
     <div class="d-flex flex-column gap-3" style="max-width: 640px;">
-        <div class="card">
-            <div class="card-body">
-                @include('profile.partials.update-profile-information-form')
+        @if (auth()->user()->is_demo_account)
+            <div class="alert alert-info mb-0">
+                Profile, password, and account-deletion changes are disabled for this shared demo account so every visitor sees the same live demo.
             </div>
-        </div>
+        @else
+            <div class="card">
+                <div class="card-body">
+                    @include('profile.partials.update-profile-information-form')
+                </div>
+            </div>
 
-        <div class="card">
-            <div class="card-body">
-                @include('profile.partials.update-password-form')
+            <div class="card">
+                <div class="card-body">
+                    @include('profile.partials.update-password-form')
+                </div>
             </div>
-        </div>
 
-        <div class="card">
-            <div class="card-body">
-                @include('profile.partials.delete-user-form')
+            <div class="card">
+                <div class="card-body">
+                    @include('profile.partials.delete-user-form')
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </x-dynamic-component>

@@ -26,15 +26,17 @@ class SendFeeDueWhatsAppReminder implements ShouldQueue
         $studentFee = $event->studentFee;
         $student = $studentFee->student;
 
-        if (! $student->parent_mobile) {
-            Log::info("WhatsApp fee reminder skipped: student #{$student->id} has no parent_mobile on file.");
+        $recipientNumber = $student->parent_mobile ?: $student->student_mobile;
 
+        if (! $recipientNumber) {
+            Log::info("WhatsApp fee reminder skipped: student #{$student->id} has no parent_mobile or student_mobile on file.");
+ 
             return;
         }
 
         $this->whatsApp->sendTemplate(
             $event->institute,
-            $student->parent_mobile,
+            $recipientNumber,
             'fee_reminder',
             [
                 'recipient_name' => $student->parent_name ?: $student->name,

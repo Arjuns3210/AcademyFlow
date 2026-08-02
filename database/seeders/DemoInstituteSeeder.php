@@ -42,6 +42,7 @@ class DemoInstituteSeeder extends Seeder
                 'tenant_id' => $institute->id,
                 'role_id' => $adminRole->id,
                 'email_verified_at' => now(),
+                'is_demo_account' => true,
             ]
         );
     }

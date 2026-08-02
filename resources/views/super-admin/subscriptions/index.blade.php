@@ -32,8 +32,19 @@
                                     {{ ucfirst($subscription->status) }}
                                 </span>
                             </td>
+                            @php
+                                $endDate = $subscription->status === 'trial' ? $subscription->trial_ends_at : $subscription->current_period_end;
+                                $daysDue = $endDate ? now()->startOfDay()->diffInDays($endDate->copy()->startOfDay(), false) : null;
+                            @endphp
                             <td>
-                                {{ $subscription->status === 'trial' ? $subscription->trial_ends_at->format('d M Y') : ($subscription->current_period_end?->format('d M Y') ?? '—') }}
+                                @if ($endDate)
+                                    {{ $endDate->format('d M Y') }}
+                                    @if ($daysDue !== null && $daysDue >= 0 && $daysDue <= 30)
+                                        <div class="text-muted small">Due in {{ $daysDue }} day{{ $daysDue === 1 ? '' : 's' }}</div>
+                                    @endif
+                                @else
+                                    —
+                                @endif
                             </td>
                             <td class="text-end">{{ $subscription->amount_paid !== null ? '₹'.number_format($subscription->amount_paid, 2) : '—' }}</td>
                             <td class="text-end">

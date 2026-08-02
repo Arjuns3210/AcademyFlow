@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Plan;
 use App\Support\PlanModuleKeys;
@@ -17,6 +18,10 @@ Route::get('/', function () {
         'moduleLabels' => PlanModuleKeys::all(),
     ]);
 });
+
+Route::post('/demo-login', [DemoLoginController::class, 'store'])
+    ->middleware(['guest', 'throttle:6,1'])
+    ->name('demo-login');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])

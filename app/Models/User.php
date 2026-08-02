@@ -75,6 +75,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => Role::class,
             'is_active' => 'boolean',
+            'is_demo_account' => 'boolean',
         ];
     }
 

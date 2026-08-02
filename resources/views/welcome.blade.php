@@ -38,11 +38,12 @@
                     @auth
                         <a href="{{ url('/dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">Log in</a>
+                        <button type="button" class="btn btn-primary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#demoLoginModal">Try Live Demo</button>
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-lg px-4">Log in</a>
                         <a href="https://mptechpoint.in/contact" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg px-4">Talk to Sales</a>
                     @endauth
                 </div>
-                <p class="text-muted small mb-0">New institutes are onboarded by our team — reach out to get set up.</p>
+                <p class="text-muted small mb-0">Every plan starts with a 7-day free trial. New institutes are onboarded by our team — reach out to get set up.</p>
             </header>
 
             {{-- Core features --}}
@@ -142,7 +143,7 @@
             <section class="landing-section landing-section-alt">
                 <h2 class="landing-section-title text-center mb-2">Simple, transparent pricing</h2>
                 <p class="text-muted text-center mx-auto mb-5 landing-section-lead">
-                    Every plan includes the full core system. Higher plans unlock automation add-ons.
+                    Every plan includes the full core system and a 7-day free trial. Higher plans unlock automation add-ons.
                 </p>
 
                 @if ($plans->isEmpty())
@@ -168,6 +169,9 @@
                                     <div class="pricing-amount mb-3">
                                         <span class="pricing-currency">₹</span>{{ number_format((float) $plan->price) }}
                                         <span class="text-muted fs-6 fw-normal">/ {{ $plan->billing_cycle === 'yearly' ? 'year' : 'month' }}</span>
+                                        @if ($plan->billing_cycle === 'yearly')
+                                            <span class="badge bg-success align-middle">10% off</span>
+                                        @endif
                                     </div>
 
                                     <ul class="list-unstyled pricing-feature-list mb-4">
@@ -196,6 +200,57 @@
             </footer>
         </div>
 
+        {{-- Demo login: capture contact details before entering the shared demo --}}
+        <div class="modal fade" id="demoLoginModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="{{ route('demo-login') }}" method="POST">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Try the Live Demo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if ($errors->any())
+                                <div class="alert alert-danger small mb-3">
+                                    <ul class="mb-0 ps-3">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <p class="text-muted small">
+                                Share your details and we'll drop you straight into a live, pre-filled demo institute.
+                                This demo session lasts {{ \App\Http\Middleware\ExpireDemoSession::MAX_DEMO_SESSION_HOURS }} hours — a real account gets a full 7-day free trial.
+                            </p>
+
+                            <div class="mb-3">
+                                <label class="form-label small mb-1">Your Name</label>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small mb-1">Phone Number</label>
+                                <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small mb-1">Institute Name</label>
+                                <input type="text" name="institute_name" class="form-control" value="{{ old('institute_name') }}" required>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label small mb-1">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary w-100">Enter Demo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         {{-- Shared lightbox for the product tour screenshots --}}
         <div class="modal fade" id="screenshotModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -212,12 +267,18 @@
         </div>
 
         <script>
-            document.querySelectorAll('.screenshot-img').forEach(function (img) {
-                img.addEventListener('click', function () {
-                    document.getElementById('screenshotModalImg').src = img.dataset.fullSrc;
-                    document.getElementById('screenshotModalImg').alt = img.alt;
-                    document.getElementById('screenshotModalTitle').textContent = img.dataset.fullTitle;
-                    new bootstrap.Modal(document.getElementById('screenshotModal')).show();
+            document.addEventListener('DOMContentLoaded', function () {
+                @if ($errors->any())
+                    new bootstrap.Modal(document.getElementById('demoLoginModal')).show();
+                @endif
+
+                document.querySelectorAll('.screenshot-img').forEach(function (img) {
+                    img.addEventListener('click', function () {
+                        document.getElementById('screenshotModalImg').src = img.dataset.fullSrc;
+                        document.getElementById('screenshotModalImg').alt = img.alt;
+                        document.getElementById('screenshotModalTitle').textContent = img.dataset.fullTitle;
+                        new bootstrap.Modal(document.getElementById('screenshotModal')).show();
+                    });
                 });
             });
         </script>

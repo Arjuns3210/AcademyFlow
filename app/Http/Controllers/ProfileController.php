@@ -26,6 +26,10 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        if ($request->user()->is_demo_account) {
+            return Redirect::route('profile.edit')->withErrors(['name' => 'Profile changes are disabled for the shared demo account.']);
+        }
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -42,6 +46,10 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        if ($request->user()->is_demo_account) {
+            return Redirect::route('profile.edit')->withErrors(['password' => 'Account deletion is disabled for the shared demo account.'], 'userDeletion');
+        }
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
