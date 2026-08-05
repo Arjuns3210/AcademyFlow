@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
         <title>{{ config('app.name', 'AcademyFlow') }} — Institute Management Software</title>
         <meta name="description" content="AcademyFlow is an all-in-one platform for coaching institutes and academies to manage admissions, fees, attendance, and reports.">
         @vite(['resources/sass/app.scss', 'resources/js/app.js'])

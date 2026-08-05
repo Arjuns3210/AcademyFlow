@@ -50,6 +50,10 @@ class ProfileController extends Controller
             return Redirect::route('profile.edit')->withErrors(['password' => 'Account deletion is disabled for the shared demo account.'], 'userDeletion');
         }
 
+        if ($request->user()->isSuperAdmin()) {
+            return Redirect::route('profile.edit')->withErrors(['password' => 'The Super Admin account cannot be deleted.'], 'userDeletion');
+        }
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);

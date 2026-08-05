@@ -23,11 +23,13 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
-                    @include('profile.partials.delete-user-form')
+            @unless (auth()->user()->isSuperAdmin())
+                <div class="card">
+                    <div class="card-body">
+                        @include('profile.partials.delete-user-form')
+                    </div>
                 </div>
-            </div>
+            @endunless
         @endif
     </div>
 </x-dynamic-component>
