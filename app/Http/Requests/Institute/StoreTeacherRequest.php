@@ -17,7 +17,7 @@ class StoreTeacherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:150'],
+            'name' => ['required', 'string', 'max:150', 'regex:/^[A-Za-z\s.\'-]+$/'],
             'qualification' => ['nullable', 'string', 'max:150'],
             // Same shape as Student's parent_mobile: optional country code,
             // then a 10-digit number.
@@ -38,6 +38,7 @@ class StoreTeacherRequest extends FormRequest
     {
         return [
             'user_id.unique' => 'That staff login is already linked to another teacher.',
+            'name.regex' => 'Teacher name may only contain letters, spaces, apostrophes, and hyphens.',
         ];
     }
 }

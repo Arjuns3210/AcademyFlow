@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DemoLoginRequest;
 use App\Mail\DemoLoginNotification;
 use App\Models\DemoLead;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +28,7 @@ class DemoLoginController extends Controller
      * has a real lead to follow up on before anyone sees the live demo.
      * Every visitor shares the same demo account/data by deliberate choice.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(DemoLoginRequest $request): RedirectResponse
     {
         if (DemoLead::where('ip_address', $request->ip())->count() >= self::MAX_ATTEMPTS_PER_IP) {
             return redirect('/')->withErrors([
@@ -36,12 +36,7 @@ class DemoLoginController extends Controller
             ]);
         }
 
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
-            'institute_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $lead = DemoLead::create($data + ['ip_address' => $request->ip()]);
 

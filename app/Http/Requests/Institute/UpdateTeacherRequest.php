@@ -17,7 +17,7 @@ class UpdateTeacherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:150'],
+            'name' => ['required', 'string', 'max:150', 'regex:/^[A-Za-z\s.\'-]+$/'],
             'qualification' => ['nullable', 'string', 'max:150'],
             'mobile' => ['required', 'string', 'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/'],
             'email' => ['nullable', 'email', 'max:150'],
@@ -36,6 +36,7 @@ class UpdateTeacherRequest extends FormRequest
     {
         return [
             'user_id.unique' => 'That staff login is already linked to another teacher.',
+            'name.regex' => 'Teacher name may only contain letters, spaces, apostrophes, and hyphens.',
         ];
     }
 }

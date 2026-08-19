@@ -28,7 +28,7 @@
             <form action="{{ route('institute.attendance.index') }}" method="GET" class="row g-2 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Date</label>
-                    <input type="date" name="date" class="form-control" value="{{ $date }}" max="{{ now()->toDateString() }}">
+                    <input type="date" name="date" class="form-control" value="{{ $date }}" min="1900-01-01" max="{{ now()->toDateString() }}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Batch</label>

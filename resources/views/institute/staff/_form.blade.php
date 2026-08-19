@@ -10,7 +10,7 @@
 </div>
 
 <div class="mb-3">
-    <x-input-label for="role_id" value="Role" />
+    <x-input-label for="role_id" value="Role" required />
     <select name="role_id" id="role_id" class="form-select" required>
         <option value="">Select a role&hellip;</option>
         @foreach ($roles as $role)

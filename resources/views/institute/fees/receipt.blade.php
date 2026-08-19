@@ -21,7 +21,7 @@
 <body>
     <table class="header">
         <tr>
-            @if ($institute->logo)
+            @if ($logoDataUri)
                 <td style="width: 60px;">
                     <img class="logo" src="{{ $logoDataUri }}">
                 </td>

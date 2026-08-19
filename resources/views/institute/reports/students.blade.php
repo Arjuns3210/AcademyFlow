@@ -42,11 +42,11 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">Admitted From</label>
-                    <input type="date" name="admission_from" class="form-control" value="{{ $filters['admission_from'] }}">
+                    <input type="date" name="admission_from" class="form-control" value="{{ $filters['admission_from'] }}" min="1900-01-01" data-range-group="admission" data-range-role="from">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">Admitted To</label>
-                    <input type="date" name="admission_to" class="form-control" value="{{ $filters['admission_to'] }}">
+                    <input type="date" name="admission_to" class="form-control" value="{{ $filters['admission_to'] }}" min="1900-01-01" data-range-group="admission" data-range-role="to">
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>

@@ -16,6 +16,16 @@ body {
     min-height: 100vh;
 }
 
+// Bootstrap's default select arrow renders quite small/faint at normal
+// text sizes — bumped up here so the dropdown affordance reads clearly
+// on every <select class="form-select"> in the app, and a pointer cursor
+// makes it obvious the field is clickable (native selects default to a
+// text-input-style cursor in some browsers).
+.form-select {
+    cursor: pointer;
+    background-size: 20px 16px;
+}
+
 // --sidebar-* custom properties let each institute set its own sidebar
 // color (Institute::sidebarStyle(), set inline in the tenant layout) without
 // a separate compiled stylesheet per tenant. The fallback values here are

@@ -7,18 +7,20 @@
             </div>
             <div class="d-flex gap-2 align-items-center">
                 <x-back-link :href="route('institute.fees.index')" />
-                @canAccessModule('whatsapp_reminder')
-                    @canModule('fees', 'view')
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
-                            Send Reminder
+                @if ($studentFee->status !== 'paid')
+                    @canAccessModule('whatsapp_reminder')
+                        @canModule('fees', 'view')
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
+                                Send Reminder
+                            </button>
+                        @endcanModule
+                    @endcanAccessModule
+                    @canModule('fees', 'edit')
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editDiscountModal">
+                            Edit Discount
                         </button>
                     @endcanModule
-                @endcanAccessModule
-                @canModule('fees', 'edit')
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editDiscountModal">
-                        Edit Discount
-                    </button>
-                @endcanModule
+                @endif
             </div>
         </div>
     </x-slot>
@@ -130,7 +132,7 @@
                             </div>
                             <div class="col-md-2">
                                 <x-input-label for="payment_date" value="Date" />
-                                <x-text-input id="payment_date" name="payment_date" type="date" class="w-100" :value="old('payment_date', now()->toDateString())" />
+                                <x-text-input id="payment_date" name="payment_date" type="date" class="w-100" lang="en-GB" min="1900-01-01" max="{{ now()->toDateString() }}" :value="old('payment_date', now()->toDateString())" />
                                 <x-input-error :messages="$errors->get('payment_date')" />
                             </div>
                             <div class="col-md-4">
@@ -239,7 +241,7 @@
     @endcanAccessModule
 
     @canModule('fees', 'edit')
-        <div class="modal fade {{ $errors->hasAny(['discount_amount', 'discount_reason']) ? 'show d-block' : '' }}" id="editDiscountModal" tabindex="-1">
+        <div class="modal fade" id="editDiscountModal" tabindex="-1" @if ($errors->hasAny(['discount_amount', 'discount_reason'])) data-open-on-load @endif>
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form action="{{ route('institute.fees.discount.update', $studentFee) }}" method="POST">
@@ -270,7 +272,7 @@
             </div>
         </div>
 
-        <div class="modal fade {{ $errors->hasAny(['installments_allowed', 'installment_notes']) ? 'show d-block' : '' }}" id="editInstallmentsModal" tabindex="-1">
+        <div class="modal fade" id="editInstallmentsModal" tabindex="-1" @if ($errors->hasAny(['installments_allowed', 'installment_notes'])) data-open-on-load @endif>
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form action="{{ route('institute.fees.installments.update', $studentFee) }}" method="POST">

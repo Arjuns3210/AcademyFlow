@@ -13,6 +13,7 @@ class WhatsAppLog extends Model
 
     protected $fillable = [
         'institute_id',
+        'source',
         'student_id',
         'template_name',
         'recipient_number',

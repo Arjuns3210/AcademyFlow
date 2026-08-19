@@ -35,6 +35,17 @@ Route::middleware(['auth'])
             Route::get('reminders', [ReminderController::class, 'index'])->name('reminders.index');
         });
 
+        // Manual wa.me quick-send is free on every plan (no Meta API cost) —
+        // deliberately outside the module:whatsapp_reminder gate above, even
+        // though it currently only lives on a page that gate still guards.
+        Route::middleware('permission:fees,view')->group(function () {
+            Route::post('reminders/{studentFee}/whatsapp-manual-log', [ReminderController::class, 'logManualWhatsApp'])->name('reminders.whatsapp-manual-log');
+        });
+
+        Route::middleware('permission:attendance,view')->group(function () {
+            Route::post('reminders/attendance/{student}/whatsapp-manual-log', [ReminderController::class, 'logManualWhatsAppAttendance'])->name('reminders.attendance.whatsapp-manual-log');
+        });
+
         Route::middleware('permission:settings,view')->group(function () {
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
         });

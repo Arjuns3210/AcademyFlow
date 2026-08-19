@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Institute extends Model
@@ -108,6 +109,21 @@ class Institute extends Model
         $code = Str::upper(preg_replace('/[^A-Za-z]/', '', $raw));
 
         return $code !== '' ? $code : 'ST';
+    }
+
+    /**
+     * The logo column can outlive its file — a re-upload that fails to
+     * clean up the old one, or a manually removed file — leaving a path
+     * that 404s. Checking existence here means every view that shows a
+     * logo gets the same "no logo" fallback instead of a broken image.
+     */
+    public function logoUrl(): ?string
+    {
+        if (! $this->logo || ! Storage::disk('public')->exists($this->logo)) {
+            return null;
+        }
+
+        return Storage::url($this->logo);
     }
 
     /**

@@ -15,8 +15,8 @@
                 <div class="card-body">
                     <h3 class="h6 text-uppercase text-muted mb-3">Institute Details</h3>
 
-                    @if ($institute->logo)
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($institute->logo) }}" alt="Logo" style="height: 64px;" class="mb-3">
+                    @if ($institute->logoUrl())
+                        <img src="{{ $institute->logoUrl() }}" alt="Logo" style="height: 64px;" class="mb-3">
                     @endif
 
                     <dl class="row mb-0">

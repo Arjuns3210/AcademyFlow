@@ -27,10 +27,10 @@
 
 <div class="row">
     <div class="col-md-6">
-        <x-form-input name="valid_from" label="Valid From" type="date" :value="$coupon?->valid_from?->toDateString() ?? ''" required />
+        <x-form-input name="valid_from" label="Valid From" type="date" :value="$coupon?->valid_from?->toDateString() ?? ''" min="1900-01-01" required />
     </div>
     <div class="col-md-6">
-        <x-form-input name="valid_until" label="Valid Until" type="date" :value="$coupon?->valid_until?->toDateString() ?? ''" required />
+        <x-form-input name="valid_until" label="Valid Until" type="date" :value="$coupon?->valid_until?->toDateString() ?? ''" min="1900-01-01" required />
     </div>
 </div>
 

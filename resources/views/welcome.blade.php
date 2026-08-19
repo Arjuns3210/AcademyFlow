@@ -212,36 +212,45 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            @if ($errors->any())
-                                <div class="alert alert-danger small mb-3">
-                                    <ul class="mb-0 ps-3">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
                             <p class="text-muted small">
                                 Share your details and we'll drop you straight into a live, pre-filled demo institute.
                                 This demo session lasts {{ \App\Http\Middleware\ExpireDemoSession::MAX_DEMO_SESSION_HOURS }} hours — a real account gets a full 7-day free trial.
                             </p>
 
                             <div class="mb-3">
-                                <label class="form-label small mb-1">Your Name</label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                                <label class="form-label small mb-1" for="demo_name">Your Name</label>
+                                <input type="text" id="demo_name" name="name" class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('name') }}" minlength="2" maxlength="100" required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label small mb-1">Phone Number</label>
-                                <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                                <label class="form-label small mb-1" for="demo_phone">Phone Number</label>
+                                <input type="tel" id="demo_phone" name="phone" class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone') }}" pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric"
+                                    placeholder="10-digit mobile number" required>
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @else
+                                    <div class="form-text">Enter a 10-digit mobile number starting with 6-9.</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label small mb-1">Institute Name</label>
-                                <input type="text" name="institute_name" class="form-control" value="{{ old('institute_name') }}" required>
+                                <label class="form-label small mb-1" for="demo_institute_name">Institute Name</label>
+                                <input type="text" id="demo_institute_name" name="institute_name" class="form-control @error('institute_name') is-invalid @enderror"
+                                    value="{{ old('institute_name') }}" maxlength="225" required>
+                                @error('institute_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-0">
-                                <label class="form-label small mb-1">Email</label>
-                                <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                                <label class="form-label small mb-1" for="demo_email">Email</label>
+                                <input type="email" id="demo_email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                    value="{{ old('email') }}" maxlength="255" required>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="modal-footer">

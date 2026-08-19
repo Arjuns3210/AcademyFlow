@@ -31,13 +31,15 @@ class BatchManagementTest extends TestCase
         $response = $this->actingAs($instituteAdmin)->post(route('institute.batches.store'), [
             'name' => 'Morning Batch',
             'course_id' => $course->id,
-            'time_slot' => '7 AM - 8 AM',
+            'time_slot_start' => '07:00',
+            'time_slot_end' => '08:00',
         ]);
 
         $response->assertRedirect(route('institute.batches.index'));
 
         $batch = Batch::where('name', 'Morning Batch')->firstOrFail();
         $this->assertSame($instituteAdmin->tenant_id, $batch->tenant_id);
+        $this->assertSame('7:00 AM - 8:00 AM', $batch->time_slot);
     }
 
     public function test_user_without_delete_permission_gets_403_on_delete_route(): void

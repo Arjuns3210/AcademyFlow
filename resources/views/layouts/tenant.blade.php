@@ -12,11 +12,11 @@
     </head>
     <body class="bg-light">
         <div class="d-flex">
-            <nav class="sidebar flex-shrink-0 {{ Auth::user()->institute?->hasLightBackground() ? 'sidebar-light-theme' : '' }}" style="width: 240px; {{ Auth::user()->institute?->sidebarStyle() }}">
-                <div class="p-3 border-bottom border-secondary">
+            <nav class="sidebar flex-shrink-0 {{ Auth::user()->institute?->hasLightBackground() ? 'sidebar-light-theme' : '' }}" id="sidebarNav" style="width: 240px; {{ Auth::user()->institute?->sidebarStyle() }}">
+                <div class="p-3 border-bottom border-secondary d-flex align-items-center">
                     <a href="{{ route('dashboard') }}" class="text-decoration-none d-flex align-items-center gap-2">
-                        @if (Auth::user()->institute?->logo)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url(Auth::user()->institute->logo) }}" alt="Logo" style="height: 32px; width: 32px; object-fit: cover; border-radius: 4px;">
+                        @if (Auth::user()->institute?->logoUrl())
+                            <img src="{{ Auth::user()->institute->logoUrl() }}" alt="Logo" style="height: 32px; width: 32px; object-fit: cover; border-radius: 4px;">
                         @endif
                         <span class="fw-semibold">{{ Auth::user()->institute?->name ?? config('app.name', 'AcademyFlow') }}</span>
                     </a>
@@ -113,10 +113,13 @@
                 </ul>
             </nav>
 
-            <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+            <div class="flex-grow-1 min-vh-100 d-flex flex-column" id="mainContent">
                 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-                    <div class="container-fluid px-4 justify-content-end">
-                        <ul class="navbar-nav">
+                    <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
+                        <button type="button" class="btn btn-link text-dark p-0" id="sidebarToggleBtn" aria-controls="sidebarNav" aria-expanded="true" aria-label="Toggle sidebar">
+                            <i class="bi bi-chevron-left fs-3"></i>
+                        </button>
+                        <ul class="navbar-nav ms-auto">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     {{ Auth::user()->name }}

@@ -33,9 +33,9 @@
             <input type="file" name="logo" id="logo" class="form-control" accept="image/png,image/jpeg,image/webp">
             <x-input-error :messages="$errors->get('logo')" />
 
-            @if ($institute?->logo)
+            @if ($institute?->logoUrl())
                 <div class="mt-2">
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($institute->logo) }}" alt="Current logo" style="height: 48px;">
+                    <img src="{{ $institute->logoUrl() }}" alt="Current logo" style="height: 48px;">
                     <span class="text-muted small">Current logo — uploading a new one will replace it.</span>
                 </div>
             @endif

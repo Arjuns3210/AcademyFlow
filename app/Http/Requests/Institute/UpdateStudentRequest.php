@@ -17,16 +17,26 @@ class UpdateStudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:150'],
+            'name' => ['required', 'string', 'max:150', 'regex:/^[A-Za-z\s.\'-]+$/'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'dob' => ['nullable', 'date', 'before:today'],
-            'gender' => ['nullable', 'in:male,female,other'],
+            'dob' => ['required', 'date', 'before:today'],
+            'gender' => ['required', 'in:male,female,other'],
             'student_mobile' => ['nullable', 'string', 'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/'],
-            'parent_name' => ['nullable', 'string', 'max:150'],
-            'parent_mobile' => ['required', 'string', 'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/'],
+            'parent_name' => ['required', 'string', 'max:150', 'regex:/^[A-Za-z\s.\'-]+$/'],
+            'parent_mobile' => [
+                'required',
+                'string',
+                'regex:/^(\+?\d{1,3}[-\s]?)?\d{10}$/',
+                Rule::unique('students')
+                    ->ignore($this->route('student'))
+                    ->where(fn ($query) => $query
+                        ->where('tenant_id', Auth::user()->tenant_id)
+                        ->where('name', $this->input('name'))
+                        ->whereNull('deleted_at')),
+            ],
             'parent_email' => ['nullable', 'email', 'max:150'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'admission_date' => ['nullable', 'date'],
+            'address' => ['required', 'string', 'max:500'],
+            'admission_date' => ['required', 'date'],
             'course_id' => [
                 'nullable',
                 'integer',
@@ -46,6 +56,15 @@ class UpdateStudentRequest extends FormRequest
                     }
                 },
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.regex' => 'Student name may only contain letters, spaces, apostrophes, and hyphens.',
+            'parent_name.regex' => 'Parent name may only contain letters, spaces, apostrophes, and hyphens.',
+            'parent_mobile.unique' => 'A student with this name and parent mobile number already exists.',
         ];
     }
 }

@@ -28,7 +28,8 @@ class CourseManagementTest extends TestCase
 
         $response = $this->actingAs($instituteAdmin)->post(route('institute.courses.store'), [
             'name' => 'Spoken English',
-            'duration' => '3 months',
+            'duration_value' => 3,
+            'duration_unit' => 'Months',
             'fee' => 4999,
         ]);
 
@@ -36,6 +37,7 @@ class CourseManagementTest extends TestCase
 
         $course = Course::where('name', 'Spoken English')->firstOrFail();
         $this->assertSame($instituteAdmin->tenant_id, $course->tenant_id);
+        $this->assertSame('3 Months', $course->duration);
     }
 
     public function test_user_without_delete_permission_gets_403_on_delete_route(): void

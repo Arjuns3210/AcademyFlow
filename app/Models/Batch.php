@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\BelongsToTenant;
 use App\Models\Concerns\HasStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -63,5 +64,33 @@ class Batch extends Model
     public function isFull(?int $excludingStudentId = null): bool
     {
         return $this->capacity !== null && $this->enrolledCount($excludingStudentId) >= $this->capacity;
+    }
+
+    /**
+     * Splits the stored "4:00 PM - 5:30 PM" string back into 24-hour
+     * start/end values so the edit form can pre-fill its two <input
+     * type="time"> fields. Falls back to blanks for legacy free-text
+     * values (e.g. "5") that predate the time-picker fields.
+     *
+     * @return array{start: string, end: string}
+     */
+    public function timeSlotParts(): array
+    {
+        $blank = ['start' => '', 'end' => ''];
+
+        if (! $this->time_slot || ! str_contains($this->time_slot, '-')) {
+            return $blank;
+        }
+
+        [$start, $end] = array_map('trim', explode('-', $this->time_slot, 2));
+
+        try {
+            return [
+                'start' => Carbon::parse($start)->format('H:i'),
+                'end' => Carbon::parse($end)->format('H:i'),
+            ];
+        } catch (\Exception $e) {
+            return $blank;
+        }
     }
 }

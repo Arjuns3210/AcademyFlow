@@ -43,4 +43,30 @@ class Course extends Model
     {
         return $this->hasMany(Batch::class);
     }
+
+    /**
+     * Splits the stored "6 Months" string back into a number + unit pair
+     * so the edit form can pre-fill its number input and unit <select>.
+     * Falls back to blanks for legacy/free-text values (e.g. "@@@2") that
+     * predate the structured duration fields.
+     *
+     * @return array{value: string, unit: string}
+     */
+    public function durationParts(): array
+    {
+        $blank = ['value' => '', 'unit' => ''];
+
+        if (! $this->duration || ! preg_match('/^(\d+)\s*([A-Za-z]+)$/', trim($this->duration), $matches)) {
+            return $blank;
+        }
+
+        $units = ['Weeks' => 'Weeks', 'Week' => 'Weeks', 'Months' => 'Months', 'Month' => 'Months', 'Years' => 'Years', 'Year' => 'Years'];
+        $unit = $units[ucfirst(strtolower($matches[2]))] ?? null;
+
+        if (! $unit) {
+            return $blank;
+        }
+
+        return ['value' => $matches[1], 'unit' => $unit];
+    }
 }

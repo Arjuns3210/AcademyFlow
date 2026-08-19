@@ -26,11 +26,11 @@
                 <input type="hidden" name="mode" value="{{ $mode }}">
                 <div class="col-md-2">
                     <label class="form-label small mb-1">From</label>
-                    <input type="date" name="from" class="form-control" value="{{ $filters['from'] }}">
+                    <input type="date" name="from" class="form-control" value="{{ $filters['from'] }}" min="1900-01-01" max="{{ now()->toDateString() }}" data-range-group="range" data-range-role="from">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">To</label>
-                    <input type="date" name="to" class="form-control" value="{{ $filters['to'] }}">
+                    <input type="date" name="to" class="form-control" value="{{ $filters['to'] }}" min="1900-01-01" max="{{ now()->toDateString() }}" data-range-group="range" data-range-role="to">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Student</label>

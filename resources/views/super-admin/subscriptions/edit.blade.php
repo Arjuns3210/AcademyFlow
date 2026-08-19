@@ -50,10 +50,10 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <x-form-input name="current_period_start" label="Period Start" type="date" :value="old('current_period_start', now()->toDateString())" required />
+                        <x-form-input name="current_period_start" label="Period Start" type="date" :value="old('current_period_start', now()->toDateString())" min="1900-01-01" required />
                     </div>
                     <div class="col-md-6">
-                        <x-form-input name="current_period_end" label="Period End" type="date" :value="old('current_period_end', now()->addMonth()->toDateString())" required />
+                        <x-form-input name="current_period_end" label="Period End" type="date" :value="old('current_period_end', now()->addMonth()->toDateString())" min="1900-01-01" required />
                     </div>
                 </div>
 

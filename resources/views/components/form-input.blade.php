@@ -1,7 +1,7 @@
 @props(['label', 'name', 'type' => 'text', 'value' => null, 'required' => false])
 
 <div class="mb-3">
-    <x-input-label :for="$name" :value="$label" />
+    <x-input-label :for="$name" :value="$label" :required="$required" />
     <x-text-input
         :id="$name"
         :name="$name"

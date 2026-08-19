@@ -1,11 +1,17 @@
-@php $batch = $batch ?? null; @endphp
+@php
+    $batch = $batch ?? null;
+    $timeSlotParts = $batch?->timeSlotParts() ?? ['start' => '', 'end' => ''];
+@endphp
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <x-form-input name="name" label="Batch Name" :value="$batch->name ?? ''" required autofocus />
     </div>
-    <div class="col-md-6">
-        <x-form-input name="time_slot" label="Time Slot" :value="$batch->time_slot ?? ''" required placeholder="e.g. 4:00 PM - 5:30 PM" />
+    <div class="col-md-4">
+        <x-form-input name="time_slot_start" label="Time Slot — Start" type="time" :value="$timeSlotParts['start']" required />
+    </div>
+    <div class="col-md-4">
+        <x-form-input name="time_slot_end" label="Time Slot — End" type="time" :value="$timeSlotParts['end']" required />
     </div>
 </div>
 
@@ -39,6 +45,6 @@
         </div>
     </div>
     <div class="col-md-4">
-        <x-form-input name="capacity" label="Capacity (optional)" type="number" min="1" :value="$batch->capacity ?? ''" placeholder="Leave blank for unlimited" />
+        <x-form-input name="capacity" label="Capacity (optional)" type="number" min="1" max="100" :value="$batch->capacity ?? ''" placeholder="Leave blank for unlimited" />
     </div>
 </div>
