@@ -7,6 +7,8 @@ use App\Models\Batch;
 use App\Models\Course;
 use App\Models\FeeTransaction;
 use App\Models\Institute;
+use App\Models\Module;
+use App\Models\Role;
 use App\Models\Student;
 use App\Models\StudentFee;
 use App\Models\Teacher;
@@ -17,7 +19,8 @@ use Illuminate\Support\Carbon;
 /**
  * Fills the demo institute (Bright Coaching Classes) with a Class 5-10 +
  * Class 11-12 Science/Commerce coaching setup: 10 courses, 10 teachers,
- * 10 batches, 10 students, plus their fee payments and attendance.
+ * 10 batches, 10 students, plus their fee payments and attendance, and
+ * two staff roles (Teacher, Accountant) alongside the Institute Admin.
  *
  * Every value is hardcoded (no fake()) because faker is a dev-only
  * dependency and this seeder is meant to run on the live server. Skips the
@@ -84,6 +87,27 @@ class CoachingDemoDataSeeder extends Seeder
         ['name' => 'Meera Joshi', 'gender' => 'female', 'age' => 17, 'parent' => 'Anil Joshi', 'area' => 'Basavanagudi', 'joined' => 20, 'paid' => 0.5, 'status' => 'inactive'],
     ];
 
+    /**
+     * Staff roles by module slug => [view, add, edit, delete, status].
+     * Modules left out get no access at all.
+     */
+    private const ROLES = [
+        'Teacher' => [
+            'courses' => [true, false, false, false, false],
+            'batches' => [true, false, false, false, false],
+            'students' => [true, false, false, false, false],
+            'attendance' => [true, true, true, false, false],
+            'reports' => [true, false, false, false, false],
+        ],
+        'Accountant' => [
+            'courses' => [true, false, false, false, false],
+            'batches' => [true, false, false, false, false],
+            'students' => [true, true, true, false, false],
+            'fees' => [true, true, true, false, false],
+            'reports' => [true, false, false, false, false],
+        ],
+    ];
+
     private const PAYMENT_MODES = ['upi', 'cash', 'bank_transfer', 'upi', 'cash'];
 
     public function run(): void
@@ -103,6 +127,8 @@ class CoachingDemoDataSeeder extends Seeder
         }
 
         $admin = User::where('tenant_id', $institute->id)->firstOrFail();
+
+        $this->seedRoles($institute);
 
         $teachers = collect(self::TEACHERS)->map(fn (array $t) => Teacher::create([
             'tenant_id' => $institute->id,
@@ -149,6 +175,29 @@ class CoachingDemoDataSeeder extends Seeder
 
             $this->seedFees($institute, $student, $admissionDate, $s['paid'], $i, $admin);
             $this->seedAttendance($institute, $student, $admissionDate, $i, $admin);
+        }
+    }
+
+    private function seedRoles(Institute $institute): void
+    {
+        $moduleIds = Module::pluck('id', 'slug');
+
+        foreach (self::ROLES as $name => $permissions) {
+            $role = Role::updateOrCreate(
+                ['tenant_id' => $institute->id, 'name' => $name],
+                ['is_system' => false]
+            );
+
+            foreach ($permissions as $slug => [$view, $add, $edit, $delete, $status]) {
+                if (! isset($moduleIds[$slug])) {
+                    continue;
+                }
+
+                $role->permissions()->updateOrCreate(
+                    ['module_id' => $moduleIds[$slug]],
+                    ['can_view' => $view, 'can_add' => $add, 'can_edit' => $edit, 'can_delete' => $delete, 'can_status' => $status]
+                );
+            }
         }
     }
 
