@@ -38,8 +38,8 @@ class SuperAdminPlanModuleAccessTest extends TestCase
         $starter = Plan::where('name', 'Starter')->firstOrFail();
         $professional = Plan::where('name', 'Professional')->firstOrFail();
 
-        // Professional starts with whatsapp_reminder + sms (seeded). Flip it:
-        // give Starter qr_attendance, and drop sms from Professional.
+        // Professional starts with whatsapp_reminder + dashboard_charts (seeded).
+        // Flip it: give Starter qr_attendance, and drop dashboard_charts from Professional.
         $response = $this->actingAs($superAdmin)->patch(route('super-admin.plans.module-access.update'), [
             'modules' => [
                 $starter->id => ['qr_attendance'],
@@ -51,7 +51,7 @@ class SuperAdminPlanModuleAccessTest extends TestCase
 
         $this->assertTrue(PlanModule::where('plan_id', $starter->id)->where('module_key', 'qr_attendance')->exists());
         $this->assertTrue(PlanModule::where('plan_id', $professional->id)->where('module_key', 'whatsapp_reminder')->exists());
-        $this->assertFalse(PlanModule::where('plan_id', $professional->id)->where('module_key', 'sms')->exists());
+        $this->assertFalse(PlanModule::where('plan_id', $professional->id)->where('module_key', 'dashboard_charts')->exists());
     }
 
     public function test_submitting_an_invalid_module_key_is_silently_ignored(): void

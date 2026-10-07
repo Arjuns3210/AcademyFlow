@@ -29,7 +29,7 @@ class ModuleAccessServiceTest extends TestCase
         $service = app(ModuleAccessService::class);
 
         $this->assertTrue($service->hasAccess($admin->institute, 'whatsapp_reminder'));
-        $this->assertTrue($service->hasAccess($admin->institute, 'sms'));
+        $this->assertTrue($service->hasAccess($admin->institute, 'dashboard_charts'));
     }
 
     public function test_active_subscription_on_a_plan_without_the_module_denies_access(): void
@@ -38,7 +38,7 @@ class ModuleAccessServiceTest extends TestCase
         $professional = Plan::where('name', 'Professional')->firstOrFail();
         $admin->institute->subscription->update(['status' => 'active', 'plan_id' => $professional->id]);
 
-        // Professional includes whatsapp_reminder/sms but not these three.
+        // Professional includes whatsapp_reminder/dashboard_charts but not these three.
         $service = app(ModuleAccessService::class);
 
         $this->assertFalse($service->hasAccess($admin->institute, 'qr_attendance'));
@@ -54,7 +54,7 @@ class ModuleAccessServiceTest extends TestCase
 
         $service = app(ModuleAccessService::class);
 
-        foreach (['whatsapp_reminder', 'sms', 'qr_attendance', 'student_login', 'parent_login'] as $key) {
+        foreach (['whatsapp_reminder', 'qr_attendance', 'student_login', 'parent_login'] as $key) {
             $this->assertFalse($service->hasAccess($admin->institute, $key), "Expected Starter to lack {$key}");
         }
     }
@@ -69,7 +69,7 @@ class ModuleAccessServiceTest extends TestCase
 
         $service = app(ModuleAccessService::class);
 
-        foreach (['whatsapp_reminder', 'sms', 'qr_attendance', 'student_login', 'parent_login'] as $key) {
+        foreach (['whatsapp_reminder', 'qr_attendance', 'student_login', 'parent_login'] as $key) {
             $this->assertTrue($service->hasAccess($admin->institute, $key), "Expected trial to grant {$key}");
         }
     }

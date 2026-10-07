@@ -14,7 +14,6 @@ class PlanModuleKeys
 {
     private const KEYS = [
         'whatsapp_reminder' => 'WhatsApp Reminders',
-        'sms' => 'SMS Reminders',
         'qr_attendance' => 'QR Code Attendance',
         'student_login' => 'Student Login Portal',
         'parent_login' => 'Parent Login Portal',

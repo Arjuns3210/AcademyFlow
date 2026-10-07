@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PlanModuleSeeder::class,
             SuperAdminSeeder::class,
             DemoInstituteSeeder::class,
+            CoachingDemoDataSeeder::class,
         ]);
     }
 }
