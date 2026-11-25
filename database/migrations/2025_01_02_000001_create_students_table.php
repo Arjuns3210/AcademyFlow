@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->date('dob')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->string('student_mobile')->nullable();
 
             $table->string('parent_name')->nullable();
             $table->string('parent_mobile');
@@ -38,6 +39,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('tenant_id');
+            $table->index('admission_date');
             $table->index('status');
             $table->unique(['tenant_id', 'student_code']);
         });

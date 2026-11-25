@@ -18,7 +18,12 @@ class DatabaseSeeder extends Seeder
             PlanModuleSeeder::class,
             SuperAdminSeeder::class,
             DemoInstituteSeeder::class,
-            CoachingDemoDataSeeder::class,
         ]);
+
+        // Demo-only showcase data; tests assert against an otherwise empty
+        // demo institute, so they must not get these extra rows.
+        if (! app()->runningUnitTests()) {
+            $this->call(CoachingDemoDataSeeder::class);
+        }
     }
 }

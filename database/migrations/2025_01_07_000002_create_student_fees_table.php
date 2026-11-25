@@ -19,6 +19,10 @@ return new class extends Migration
             // column — MySQL generated columns complicate updates.
             $table->decimal('net_fee', 10, 2);
             $table->boolean('installments_allowed')->default(false);
+            // Lightweight, non-enforced reference note for accountants, e.g.
+            // "3 installments of Rs 500, due by 5th of each month" — not a
+            // due-date/late-fee engine, that's out of v1 scope.
+            $table->text('installment_notes')->nullable();
             $table->timestamps();
 
             // One row per student for now — assumes one active course per

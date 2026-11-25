@@ -14,6 +14,10 @@ return new class extends Migration
             $table->unsignedBigInteger('institute_type_id')->nullable();
             $table->string('name');
             $table->string('logo')->nullable();
+            // Null means "use the standard dark sidebar" — not every
+            // institute picks a custom color, and this must stay
+            // distinguishable from having deliberately chosen black.
+            $table->string('theme_color', 7)->nullable();
             $table->text('address')->nullable();
             $table->string('contact')->nullable();
             $table->string('email')->nullable();

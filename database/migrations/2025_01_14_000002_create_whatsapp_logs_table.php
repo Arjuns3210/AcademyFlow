@@ -11,6 +11,9 @@ return new class extends Migration
         Schema::create('whatsapp_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('institute_id')->constrained('institutes')->cascadeOnDelete();
+            // Distinguishes a real Meta Cloud API send from a manual wa.me
+            // link that staff opened by hand.
+            $table->enum('source', ['api', 'manual_link'])->default('api');
 
             // nullOnDelete, not cascade — same "history survives" precedent
             // as FeeTransaction.collected_by/voided_by. A log is a record
@@ -25,7 +28,9 @@ return new class extends Migration
             // 'delivered'/'read' are reserved for a future Meta delivery-
             // webhook receiver, which doesn't exist yet — 9B only ever
             // writes 'sent' or 'failed' at send time.
-            $table->enum('status', ['sent', 'delivered', 'failed', 'read'])->default('sent');
+            // 'link_opened': a manual wa.me click only proves the link was
+            // opened, not that the message was actually sent.
+            $table->enum('status', ['sent', 'delivered', 'failed', 'read', 'link_opened'])->default('sent');
 
             $table->string('meta_message_id')->nullable();
 

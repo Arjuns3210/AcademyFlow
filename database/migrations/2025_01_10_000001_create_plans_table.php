@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->enum('billing_cycle', ['monthly', 'yearly'])->default('monthly');
+            // Null = unlimited (Enterprise).
+            $table->unsignedInteger('staff_limit')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

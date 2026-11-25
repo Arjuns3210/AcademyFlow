@@ -19,8 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['super_admin', 'tenant_user']);
+            $table->boolean('is_demo_account')->default(false);
             // FK to roles added in a later migration once the roles table exists.
             $table->unsignedBigInteger('role_id')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
 

@@ -34,6 +34,7 @@ return new class extends Migration
 
             $table->index('tenant_id');
             $table->index('student_fee_id');
+            $table->index('payment_date');
             $table->unique(['tenant_id', 'receipt_number']);
         });
     }
